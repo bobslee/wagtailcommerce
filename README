@@ -1,0 +1,4 @@
+# INSTALL
+
+Copy example.settings.py from this application to the project-root/settings.py
+Copy example.urls.py from this application to the project-root/urls.py
