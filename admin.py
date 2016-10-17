@@ -34,6 +34,13 @@ class ProductAdmin(admin.ModelAdmin):
             parent_page.add_child(instance=product_page)
             obj.product_page = product_page
 
+        # Change ProductPage object/record too.
+        if change and obj.product_page and 'title' in form.changed_data:
+            obj.product_page.title = form.cleaned_data['title']
+
         obj.save()
+        # TODO Is this the Django-way or can we delegate this FK-object
+        # save via the obj.save() ?
+        obj.product_page.save()
 
 admin.site.register(Product, ProductAdmin)

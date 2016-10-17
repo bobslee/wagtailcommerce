@@ -20,7 +20,6 @@ class ProductPage(Page):
     subpage_types = []
     is_createable = False
 
-
 class Product(models.Model):
     # TODO:
     # - title(unique=True) ?
