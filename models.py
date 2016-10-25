@@ -38,5 +38,6 @@ class Product(models.Model):
     product_page = models.ForeignKey(
         ProductPage,
         null=True,
-        on_delete=models.SET_NULL
-    )    
+        unique=True,
+        on_delete=models.SET_NULL,
+    )
