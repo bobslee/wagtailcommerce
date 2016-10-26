@@ -1,15 +1,12 @@
 from django.contrib import admin
 from django import forms
-from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from django.forms.widgets import HiddenInput
-
 from django.db.models import Q
 
-from wagtail.wagtailcore.models import Page
-
-from .models import Product, ProductIndexPage, ProductPage
+from .models import Product, ProductPage
+from .services import ProductService
 
 class ProductAdminForm(forms.ModelForm):
    add_product_page = forms.BooleanField(
@@ -55,28 +52,12 @@ class ProductAdmin(admin.ModelAdmin):
    )
 
    def save_model(self, request, obj, form, change):
-      if (not change or obj.pk) and form.cleaned_data['add_product_page']:
+      product = ProductService(obj)
 
-         parent_page = Page.objects.type(ProductIndexPage).first()
-         product_page = ProductPage(
-             title = obj.title,
-         )
-         parent_page.add_child(instance=product_page)
-         obj.product_page = product_page
-
-      # Change ProductPage object/record too.
-      if change and obj.product_page and 'title' in form.changed_data:
-         obj.product_page.title = form.cleaned_data['title']
-
-      if change and obj.product_page and 'product_page' in form.changed_data:
-         obj.product_page = form.cleaned_data['product_page']
-
-      obj.save()
-      
-      # TODO Is this the Django-way or can we delegate this FK-object
-      # save via the obj.save() ?
-      if obj.product_page:
-         obj.product_page.save()
+      if not change:
+         product.create(form.cleaned_data)
+      else:
+         product.update(form.cleaned_data)
 
    def view_on_site(self, obj):
       if obj.product_page:
