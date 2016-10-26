@@ -20,6 +20,9 @@ class ProductPage(Page):
     subpage_types = []
     is_createable = False
 
+    def __str__(self):
+        return "%s [#%s]" % (self.title, self.id)
+
 class Product(models.Model):
     # TODO:
     # - title(unique=True) ?
