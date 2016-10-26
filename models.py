@@ -32,7 +32,7 @@ class Product(models.Model):
     description = models.TextField(
         blank=True,
         verbose_name=_('description'),
-        help_text=_('For internal usage only.')
+        help_text=_('For backend/admin usage only.')
     )
 
     product_page = models.ForeignKey(

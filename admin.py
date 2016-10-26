@@ -13,13 +13,16 @@ class ProductAdminForm(forms.ModelForm):
    add_product_page = forms.BooleanField(
       initial=False,
       required=False,
+      help_text=_("Adds a linked/referenced (CMS) ProductPage from this product."),
    )
 
    def __init__(self, *args, **kwargs):
       super(ProductAdminForm, self).__init__(*args, **kwargs)
 
-      if self.instance.pk:
+      if self.instance.product_page:
          self.fields['add_product_page'].widget = HiddenInput()
+      
+      if self.instance.pk:
          self.fields['product_page'].required = False
       else:
          page_field = self.fields.get('product_page')
@@ -33,6 +36,14 @@ class ProductAdminForm(forms.ModelForm):
 class ProductAdmin(admin.ModelAdmin):
    form = ProductAdminForm
    list_display = ['title', 'product_page']
+   fieldsets = (
+      (None, {
+         'fields': ('title', 'description'),
+      }),
+      ('CMS', {
+         'fields': ('add_product_page', 'product_page'),
+      })
+   )
 
    def save_model(self, request, obj, form, change):
       if (not change or obj.pk) and form.cleaned_data['add_product_page']:
