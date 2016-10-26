@@ -5,6 +5,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from django.forms.widgets import HiddenInput
 
+from django.db.models import Q
+
 from wagtail.wagtailcore.models import Page
 
 from .models import Product, ProductIndexPage, ProductPage
@@ -18,6 +20,13 @@ class ProductAdminForm(forms.ModelForm):
 
    def __init__(self, *args, **kwargs):
       super(ProductAdminForm, self).__init__(*args, **kwargs)
+
+      # XXX Could be done in the model on the ForeignKey field, by
+      # implementing 'limit_choices_to' option.  This however (currently)
+      # doesn't have access to the current object/instance.
+      self.fields['product_page'].queryset = ProductPage.objects.filter(
+         Q(product__isnull=True) | Q(product__pk=self.instance.id)
+      ).order_by('title')
 
       if self.instance.product_page:
          self.fields['add_product_page'].widget = HiddenInput()
