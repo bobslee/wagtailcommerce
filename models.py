@@ -8,26 +8,24 @@ from wagtail.wagtailcore.models import Page
 
 class CommercePage(Page):
     subpage_types = ['ProductIndexPage']
-    is_createable = False
+    is_creatable = False
 
 class ProductIndexPage(Page):
     parent_page_types = ['CommercePage']
     subpage_types = ['ProductPage']
-    is_createable = False
+    is_creatable = False
 
 class ProductPage(Page):
     parent_page_types = ['ProductIndexPage']
     subpage_types = []
-    is_createable = False
+    is_creatable = False
 
     def __str__(self):
-        return "%s [#%s]" % (self.title, self.id)
+        return "%s" % (self.title)
 
 class Product(models.Model):
-    # TODO:
-    # - title(unique=True) ?
-    # - id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(
+        unique=True,
         max_length=255,
         verbose_name=_('title')
     )
@@ -35,13 +33,13 @@ class Product(models.Model):
     description = models.TextField(
         blank=True,
         verbose_name=_('description'),
-        help_text=_('For backend/admin usage only.')
+        help_text=_('For admin/backoffice purposes only.')
     )
 
-    product_page = models.ForeignKey(
+    product_page = models.OneToOneField(
         ProductPage,
         null=True,
-        unique=True,
+        blank=True,
         on_delete=models.SET_NULL,
     )
 

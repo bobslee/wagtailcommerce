@@ -18,22 +18,25 @@ class ProductAdminForm(forms.ModelForm):
    def __init__(self, *args, **kwargs):
       super(ProductAdminForm, self).__init__(*args, **kwargs)
 
-      # XXX Could be done in the model on the ForeignKey field, by
-      # implementing 'limit_choices_to' option.  This however (currently)
-      # doesn't have access to the current object/instance.
-      self.fields['product_page'].queryset = ProductPage.objects.filter(
-         Q(product__isnull=True) | Q(product__pk=self.instance.id)
-      ).order_by('title')
+      self.set_product_page_queryset()
 
-      if self.instance.product_page:
+      if hasattr(self.instance, 'product_page') and self.instance.product_page:
          self.fields['add_product_page'].widget = HiddenInput()
       
-      if self.instance.pk:
-         self.fields['product_page'].required = False
-      else:
+      if not self.instance.pk:
          page_field = self.fields.get('product_page')
-         page_field.required = False
          page_field.widget = HiddenInput()
+
+   def set_product_page_queryset(self):
+      # XXX Could be done in the model on the OneToOne field, by
+      # implementing 'limit_choices_to' option.  This however (currently)
+      # doesn't have access to the current object/instance.
+      if self.instance.pk != None:
+         expression = Q(product__isnull=True) | Q(product__pk=self.instance.pk)
+      else:
+         expression = Q(product__isnull=True)
+         
+      self.fields['product_page'].queryset = ProductPage.objects.filter(expression).order_by('title')      
 
    class Meta:
       model = Product
