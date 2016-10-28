@@ -1,9 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-
 from wagtail.wagtailcore.models import Page
 
 class CommercePage(Page):
