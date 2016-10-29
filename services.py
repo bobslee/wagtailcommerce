@@ -1,3 +1,6 @@
+from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
+
 from wagtail.wagtailcore.models import Page
 
 from .models import ProductIndexPage, ProductPage
@@ -20,6 +23,7 @@ class ProductService(object):
             self.add_product_page(data)
 
         self.save()
+        self.validate(data)
         
     def update(self, data={}):
         if not data:
@@ -38,12 +42,24 @@ class ProductService(object):
                 self.product.product_page.title = data['title']
         
         self.save(save_product_page=True)
+        self.validate(data)
         
     def save(self, **kwargs):
         self.product.save()
 
         if kwargs.get('save_product_page', False) and self.product.product_page:
             self.product.product_page.save()
+
+    def validate(self, data={}):
+        if data.get('add_product_page', False) and data.get('product_page'):
+            msg = _("Only one (CMS) product page can be specified per product! "
+                    "It's not allowed to link an existing product page (%s) and "
+                    "add a (new) product page."
+                    ) % data.get('product_page')
+            
+            raise ValidationError([
+                ValidationError(msg, code='invalid'),
+            ])
 
     def add_product_page(self, data={}):
         add_product_page = data.get('add_product_page', False)

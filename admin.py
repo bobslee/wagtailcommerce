@@ -36,7 +36,19 @@ class ProductAdminForm(forms.ModelForm):
       else:
          expression = Q(product__isnull=True)
          
-      self.fields['product_page'].queryset = ProductPage.objects.filter(expression).order_by('title')      
+      self.fields['product_page'].queryset = ProductPage.objects.filter(expression).order_by('title')
+
+   # Validation
+   def clean(self):
+      cleaned_data = super(ProductAdminForm, self).clean()
+      add_product_page = cleaned_data.get("add_product_page")
+      product_page = cleaned_data.get("product_page")
+
+      if add_product_page and product_page != None:
+         self.add_error('add_product_page', 'Existing product page was choosen')
+         self.add_error('product_page', 'Add (new) product page was choosen')
+         
+         raise forms.ValidationError("Only one (CMS) product page can be specified per product!")
 
    class Meta:
       model = Product
