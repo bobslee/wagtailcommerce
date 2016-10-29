@@ -7,10 +7,16 @@ class CommercePage(Page):
     subpage_types = ['ProductIndexPage']
     is_creatable = False
 
+    def __str__(self):
+        return "%s" % (self.title)
+
 class ProductIndexPage(Page):
     parent_page_types = ['CommercePage']
     subpage_types = ['ProductPage']
     is_creatable = False
+
+    def __str__(self):
+        return "%s" % (self.title)
 
 class ProductPage(Page):
     parent_page_types = ['ProductIndexPage']

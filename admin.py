@@ -64,13 +64,13 @@ class ProductAdmin(admin.ModelAdmin):
 
    def view_on_site(self, obj):
       if obj.product_page:
-         return obj.product_page.url
+         return obj.product_page.full_url
 
    def render_change_form(self, request, context, add=False, change=False, form_url='', obj=None):
       if change and obj.product_page:
          context.update({
             'cmslink': {
-               'title': 'View in CMS',
+               'title': 'CMS Page',
                'url': reverse('wagtailadmin_pages:edit', args=(obj.product_page.id,)),
             }
          })
