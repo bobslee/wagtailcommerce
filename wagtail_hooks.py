@@ -11,7 +11,7 @@ def page_listing_buttons(page, page_perms, is_parent=False):
     admin_url = 'admin:commerce_wagtail_product_change'
 
     # TODO if user has_permission for (django)admin product_change
-    if isinstance(page.specific, ProductPage):
+    if isinstance(page.specific, ProductPage) and hasattr(page, 'product'):
         url = reverse(admin_url,
                       args=(quote(page.product.pk),),
                       current_app='commerce_wagtail',
