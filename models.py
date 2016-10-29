@@ -6,6 +6,7 @@ from wagtail.wagtailadmin.edit_handlers import TabbedInterface, ObjectList
 from wagtail.wagtailadmin.edit_handlers import MultiFieldPanel, FieldPanel
 
 from .admin_page import AdminProductPageForm
+from .edit_handlers import add_panel_to_edit_handler, ProductPanel
 
 class CommercePage(Page):
     subpage_types = ['ProductIndexPage']
@@ -26,24 +27,11 @@ class ProductPage(Page):
     parent_page_types = ['ProductIndexPage']
     subpage_types = []
     is_creatable = False
-    base_form_class = AdminProductPageForm
-    
-    product_panels = [
-        MultiFieldPanel([
-            FieldPanel('product_title'),
-            FieldPanel('product_description'),
-        ], 'Info')
-    ]
-
-    edit_handler = TabbedInterface([
-        ObjectList(Page.content_panels, heading='Content'),
-        ObjectList(Page.promote_panels, heading='Promote'),
-        ObjectList(Page.settings_panels, heading='Settings', classname="settings"),
-        ObjectList(product_panels, heading='Product'),
-    ])
 
     def __str__(self):
         return "%s" % (self.title)
+
+add_panel_to_edit_handler(ProductPage, ProductPanel, _(u'Product'))
 
 class Product(models.Model):
     title = models.CharField(

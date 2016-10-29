@@ -1,0 +1,24 @@
+{% load i18n %}
+
+<h2>{% trans 'Product' %}</h2>
+
+<fieldset>
+  <legend>{% trans 'Product' %}</legend>
+  <div>
+    <table class="listing">
+      <tbody>
+        <tr>
+          <td class="title"><h2>Title</h2></td><td>{{ self.instance.product.title }}</td>
+        </tr>
+        <tr>
+          <td class="title"><h2>Description</h2></td><td>{{ self.instance.product.description }}</td>
+        </tr>
+        {% if admin_url %}
+        <tr>
+          <td colspan="2"><a class="button" href="{{ admin_url }}">Commerce admin</a></td>
+        </tr>
+        {% endif %}
+      <tbody>
+    </table>
+  </div>
+</fieldset>
