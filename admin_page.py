@@ -17,6 +17,9 @@ class AdminProductPageForm(WagtailAdminPageForm):
     def __init__(self, *args, **kwargs):
         super(AdminProductPageForm, self).__init__(*args, **kwargs)
 
+        if not hasattr(self.instance, 'product'):
+            return
+
         # TODO
         # - Disable and colorize (to contrast the light-grey)
         # - Set/copy help_text from the product if any?
