@@ -42,13 +42,14 @@ class BaseProductPanel(EditHandler):
             'self': self,
         }
 
-        # TODO if user has_permission for (django)admin product_change
-        admin_url = reverse('admin:commerce_wagtail_product_change',
-                      args=(quote(self.instance.product.pk),),
-                      current_app='commerce_wagtail',
-        )
-
-        context['admin_url'] = admin_url
+        # TODO and if user has_permission for (django)admin product_change
+        if getattr(self.instance, 'product', False) != False:
+            admin_url = reverse('admin:commerce_wagtail_product_change',
+                          args=(quote(self.instance.product.pk),),
+                          current_app='commerce_wagtail',
+            )
+            context['admin_url'] = admin_url
+            context['product'] = self.instance.product
 
         return mark_safe(
             render_to_string(self.template, context)

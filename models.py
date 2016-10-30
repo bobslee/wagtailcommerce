@@ -31,7 +31,7 @@ class ProductPage(Page):
     def __str__(self):
         return "%s" % (self.title)
 
-add_panel_to_edit_handler(ProductPage, ProductPanel, _(u'Product'))
+add_panel_to_edit_handler(ProductPage, ProductPanel, _('Commerce'))
 
 class Product(models.Model):
     title = models.CharField(

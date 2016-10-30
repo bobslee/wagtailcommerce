@@ -5,22 +5,29 @@
 <fieldset>
   <legend>{% trans 'Product' %}</legend>
   <div>
+    {% if product %}
     <table class="listing">
       <tbody>
         <tr>
-          <td class="title"><h2>Title</h2></td><td>{{ self.instance.product.title }}</td>
+          <td class="title"><h2>Title</h2></td><td>{{ product.title }}</td>
         </tr>
         <tr>
-          <td class="title"><h2>Description</h2></td><td>{{ self.instance.product.description }}</td>
+          <td class="title"><h2>Description</h2></td><td>{{ product.description }}</td>
         </tr>
-        {% if admin_url %}
+        {# {% if perms.commerce_wagtail.can_change_product and admin_url %} #}
         <tr>
           <td colspan="2">
             <a class="button icon icon-arrow-right icon-larger" href="{{ admin_url }}">Commerce admin</a>
           </td>
         </tr>
-        {% endif %}
+        {# {% endif %} #}
       <tbody>
     </table>
+    {% else %}
+    <strong>{% trans "This product-page doesn't belong to a product (yet)." %}</strong>
+    <p>{% trans "In the Commerce admin a product can be coupled to this page." %}</p>
+    {% endif %}
   </div>
+
+
 </fieldset>
