@@ -52,14 +52,14 @@ class ProductAdminForm(forms.ModelForm):
 
    class Meta:
       model = Product
-      fields = ['title', 'description', 'price', 'product_page']
+      fields = ['title', 'description', 'sale_price', 'cost_price', 'product_page']
 
 class ProductAdmin(admin.ModelAdmin):
    form = ProductAdminForm
    list_display = ['title', 'product_page']
    fieldsets = (
       (None, {
-         'fields': ('title', 'description', 'price'),
+         'fields': ('title', 'description', 'sale_price', 'cost_price'),
       }),
       ('CMS', {
          'fields': ('add_product_page', 'product_page'),

@@ -56,7 +56,16 @@ class Product(models.Model):
         on_delete=models.SET_NULL,
     )
 
-    price = MoneyField(max_digits=10, decimal_places=2)
+    sale_price = MoneyField(
+        max_digits=10,
+        decimal_places=2
+    )
+
+    cost_price = MoneyField(
+        max_digits=10,
+        decimal_places=2
+    )
+    
 
     def __str__(self):
         return "%s" % (self.title)

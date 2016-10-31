@@ -15,7 +15,10 @@
           <td class="title"><h2>Description</h2></td><td>{{ product.description }}</td>
         </tr>
         <tr>
-          <td class="title"><h2>Price</h2></td><td>{{ product.price }}</td>
+          <td class="title"><h2>Sale price</h2></td><td>{{ product.sale_price }}</td>
+        </tr>
+        <tr>
+          <td class="title"><h2>Cost price</h2></td><td>{{ product.cost_price }}</td>
         </tr>
         {# {% if perms.commerce_wagtail.can_change_product and admin_url %} #}
         <tr>
