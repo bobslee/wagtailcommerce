@@ -14,7 +14,7 @@ def initial_data(apps, schema_editor):
     root_page = Page.objects.get(slug='root')
     
     commerce_page = CommercePage(
-        title="Commerce [ MOVE UNDER A SITE ROOT-PAGE AND RENAME ]",
+        title="Commerce [ MOVE under a Site Root Page and rename title, slug ]",
     )
 
     root_page.add_child(instance=commerce_page)
