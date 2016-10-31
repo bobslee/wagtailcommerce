@@ -14,10 +14,13 @@
         <tr>
           <td class="title"><h2>Description</h2></td><td>{{ product.description }}</td>
         </tr>
+        <tr>
+          <td class="title"><h2>Price</h2></td><td>{{ product.price }}</td>
+        </tr>
         {# {% if perms.commerce_wagtail.can_change_product and admin_url %} #}
         <tr>
           <td colspan="2">
-            <a class="button icon icon-arrow-right icon-larger" href="{{ admin_url }}">Commerce admin</a>
+            <a class="button icon icon-arrow-right icon-larger" href="{{ admin_url }}">View in admin</a>
           </td>
         </tr>
         {# {% endif %} #}
