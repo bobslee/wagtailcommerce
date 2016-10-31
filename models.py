@@ -5,6 +5,9 @@ from wagtail.wagtailcore.models import Page
 from wagtail.wagtailadmin.edit_handlers import TabbedInterface, ObjectList
 from wagtail.wagtailadmin.edit_handlers import MultiFieldPanel, FieldPanel
 
+import moneyed
+from djmoney.models.fields import MoneyField
+
 from .admin_page import AdminProductPageForm
 from .edit_handlers import add_panel_to_edit_handler, ProductPanel
 
@@ -52,6 +55,8 @@ class Product(models.Model):
         blank=True,
         on_delete=models.SET_NULL,
     )
+
+    price = MoneyField(max_digits=10, decimal_places=2)
 
     def __str__(self):
         return "%s" % (self.title)
