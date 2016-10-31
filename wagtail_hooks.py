@@ -3,6 +3,7 @@ from django.contrib.admin.utils import quote
 
 from wagtail.wagtailcore import hooks
 from wagtail.wagtailadmin import widgets as wagtailadmin_widgets
+from wagtail.wagtailadmin.menu import MenuItem
 
 from .models import ProductPage
 
@@ -22,3 +23,10 @@ def page_listing_buttons(page, page_perms, is_parent=False):
             url,
             priority=100,
         )
+
+@hooks.register('register_admin_menu_item')
+def register_django_admin_menu_item():
+    return MenuItem(
+        'Apps admin', reverse('admin:index'),
+        classnames='icon icon-redirect', order=100000
+    )
