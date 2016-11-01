@@ -31,7 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'commerce_wagtail.apps.CommerceWagtailConfig',
+    'wagtail_commerce.apps.WagtailCommerceConfig',
     
     'django.contrib.admin',
     'django.contrib.auth',
@@ -98,9 +98,9 @@ WSGI_APPLICATION = 'demo.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'demo_commerce_wagtail',
-        'USER': 'demo_commerce_wagtail',
-        'PASSWORD': 'demo_commerce_wagtail',
+        'NAME': 'demo_wagtail_commerce',
+        'USER': 'demo_wagtail_commerce',
+        'PASSWORD': 'demo_wagtail_commerce',
         'HOST': 'localhost',
         'PORT': '',
         'ATOMIC_REQUESTS': True,

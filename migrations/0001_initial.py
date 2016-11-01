@@ -56,6 +56,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='product',
             name='product_page',
-            field=models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='commerce_wagtail.ProductPage'),
+            field=models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='wagtail_commerce.ProductPage'),
         ),
     ]

@@ -52,7 +52,7 @@ def remove_initial_data(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('commerce_wagtail', '0001_initial')
+        ('wagtail_commerce', '0001_initial')
     ]
 
     operations = [

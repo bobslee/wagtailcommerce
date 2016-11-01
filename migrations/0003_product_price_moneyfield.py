@@ -10,7 +10,7 @@ import djmoney.models.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('commerce_wagtail', '0002_initial_data'),
+        ('wagtail_commerce', '0002_initial_data'),
     ]
 
     operations = [

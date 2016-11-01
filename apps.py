@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
-class CommerceWagtailConfig(AppConfig):
-    name = 'apps.commerce_wagtail'
+class WagtailCommerceConfig(AppConfig):
+    name = 'apps.wagtail_commerce'
     verbose_name = 'Commerce catalog'
