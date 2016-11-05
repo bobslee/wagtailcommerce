@@ -9,13 +9,13 @@ from .models import ProductPage
 
 @hooks.register('register_page_listing_buttons')
 def page_listing_buttons(page, page_perms, is_parent=False):
-    admin_url = 'admin:wagtail_commerce_product_change'
+    admin_url = 'admin:wagtailcommerce_product_change'
 
     # TODO if user has_permission for (django)admin product_change
     if isinstance(page.specific, ProductPage) and hasattr(page, 'product'):
         url = reverse(admin_url,
                       args=(quote(page.product.pk),),
-                      current_app='wagtail_commerce',
+                      current_app='wagtailcommerce',
         )
         
         yield wagtailadmin_widgets.PageListingButton(

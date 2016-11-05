@@ -31,7 +31,7 @@ def add_panel_to_edit_handler(model, panel_cls, heading, index=None):
         edit_handler.children.append(panel_instance)
 
 class BaseProductPanel(EditHandler):
-    template = 'wagtail_commerce/edit_handlers/product.html'
+    template = 'wagtailcommerce/edit_handlers/product.html'
 
     def __init__(self, instance=None, form=None):
         super(BaseProductPanel, self).__init__(instance, form)
@@ -44,9 +44,9 @@ class BaseProductPanel(EditHandler):
 
         # TODO and if user has_permission for (django)admin product_change
         if getattr(self.instance, 'product', False) != False:
-            admin_url = reverse('admin:wagtail_commerce_product_change',
+            admin_url = reverse('admin:wagtailcommerce_product_change',
                           args=(quote(self.instance.product.pk),),
-                          current_app='wagtail_commerce',
+                          current_app='wagtailcommerce',
             )
             context['admin_url'] = admin_url
             context['product'] = self.instance.product

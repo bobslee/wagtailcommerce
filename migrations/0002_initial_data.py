@@ -14,7 +14,8 @@ def initial_data(apps, schema_editor):
     root_page = Page.objects.get(slug='root')
     
     commerce_page = CommercePage(
-        title="Commerce [ MOVE under a Site Root Page and rename title, slug ]",
+        title="Commerce",
+        body="This is the main Commerce Page. Ensure it's moved under a Site Root Page."
     )
 
     root_page.add_child(instance=commerce_page)
@@ -52,7 +53,7 @@ def remove_initial_data(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wagtail_commerce', '0001_initial')
+        ('wagtailcommerce', '0001_initial')
     ]
 
     operations = [
