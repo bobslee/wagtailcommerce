@@ -3,11 +3,24 @@ from __future__ import absolute_import, unicode_literals
 from django import template
 from django.template.loader import render_to_string
 
+from wagtail.wagtailcore.models import PAGE_TEMPLATE_VAR, Page, PageRevision
+
 register = template.Library()
 
+def get_page_instance(context):
+    """
+    Given a template context, try and find a Page variable in the common
+    places. Returns None if a page can not be found.
+    """
+    possible_names = [PAGE_TEMPLATE_VAR, 'self']
+    for name in possible_names:
+        if name in context:
+            page = context[name]
+            if isinstance(page, Page):
+                return page
 
 @register.simple_tag(takes_context=True)
-def wagtailcommerce_product_index(context, position='bottom-right'):
+def wagtailcommerce_product_index(context):
     # Find request object
     try:
         request = context['request']
@@ -28,15 +41,7 @@ def wagtailcommerce_product_index(context, position='bottom-right'):
     if page.pk is None:
         return ''
 
-    # # Render the items
-    # rendered_items = [item.render(request) for item in items]
-
-    # # Remove any unrendered items
-    # rendered_items = [item for item in rendered_items if item]
-
-    # Render the userbar items
-    return render_to_string('wagtailcommerce/product/product_index_page.html', {
+    return render_to_string('wagtailcommerce/product_index_page.html', {
         'request': request,
         'page': page,
-        'revision_id': revision_id
     })

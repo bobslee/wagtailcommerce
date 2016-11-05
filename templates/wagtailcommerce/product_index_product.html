@@ -1,0 +1,16 @@
+<li class="product">
+  <div class="product-headline">
+    {% block product_index_product_headline %}
+    <h4>
+      <a href="{{ product_page.url}}" title="More info about the {{ product_page.title }}">
+          {{ product_page.title }}
+      </a>
+    </h4>
+    <strong>
+      {% block product_index_product_info %}
+          {{ product_page.product.sale_price }}
+      {% endblock %}
+    </strong>
+    {% endblock %}
+  </div>
+</li>
