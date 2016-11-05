@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from wagtail.wagtailcore.models import Page
+from wagtail.wagtailcore.fields import RichTextField
 from wagtail.wagtailadmin.edit_handlers import TabbedInterface, ObjectList
 from wagtail.wagtailadmin.edit_handlers import MultiFieldPanel, FieldPanel
 
@@ -14,6 +15,12 @@ from .edit_handlers import add_panel_to_edit_handler, ProductPanel
 class CommercePage(Page):
     subpage_types = ['ProductIndexPage']
     is_creatable = False
+
+    body = RichTextField(blank=True)
+
+    content_panels = Page.content_panels + [
+        FieldPanel('body', classname="full")
+    ]
 
     def __str__(self):
         return "%s" % (self.title)
