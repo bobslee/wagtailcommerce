@@ -9,7 +9,7 @@ import djmoney.models.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wagtail_commerce', '0004_auto_20161105_1807'),
+        ('wagtail_commerce', '0004_commerce_page_body_field'),
     ]
 
     operations = [
