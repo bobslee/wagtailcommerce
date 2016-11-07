@@ -90,3 +90,28 @@ class ProductAdmin(admin.ModelAdmin):
       return super(ProductAdmin, self).render_change_form(request, context, add, change, form_url, obj)
        
 admin.site.register(Product, ProductAdmin)
+
+def has_admin_perm(user, app_name, model_name=None):
+   from django.apps import apps
+
+   # As check: apps.get_model() Raises LookupError if no model exists
+   # with this name.
+   if model_name and apps.get_model(app_name, model_name):
+      return (
+         user.has_perm('%s.add_%s' % (app_name, model_name)) or
+         user.has_perm('%s.change_%s' % (app_name, model_name)) or
+         user.has_perm('%s.delete_%s' % (app_name, model_name))
+      )
+   elif user.is_staff:
+      app_models = apps.get_app_config(app_name).models
+        
+      for app_model_name in app_models:
+         if (user.has_perm('%s.add_%s' % (app_name, app_model_name)) or
+             user.has_perm('%s.change_%s' % (app_name, app_model_name)) or
+             user.has_perm('%s.delete_%s' % (app_name, app_model_name))):
+            return True
+      else:
+         # If no loop iteration satisfies
+         return False
+   else:
+      return False
