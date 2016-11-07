@@ -65,12 +65,14 @@ class Product(models.Model):
 
     sale_price = MoneyField(
         max_digits=10,
-        decimal_places=2
+        decimal_places=2,
+        help_text=_("Base price to compute the customer price. Sometimes called the catalog price.")
     )
 
     cost_price = MoneyField(
         max_digits=10,
-        decimal_places=2
+        decimal_places=2,
+        help_text=_("Cost of the product.")
     )
     
 
