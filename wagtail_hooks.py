@@ -33,7 +33,7 @@ def global_admin_css():
     return format_html('<link rel="stylesheet" href="{}">', static('wagtailcommerce/css/wagtailadmin/core.css'))
 
 class CommerceMenuItem(SubmenuMenuItem):
-    template = 'wagtailcommerce/menu_settings_menu_item.html'
+    template = 'wagtailcommerce/menu_commerce_menu_item.html'
 
     def is_shown(self, request):
         return has_admin_perm(request.user, 'wagtailcommerce')
