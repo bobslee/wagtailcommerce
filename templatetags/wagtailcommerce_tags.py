@@ -3,6 +3,7 @@ from __future__ import absolute_import, unicode_literals
 from django import template
 from django.template.loader import render_to_string
 
+from wagtailcommerce import __version__
 from wagtail.wagtailcore.models import PAGE_TEMPLATE_VAR, Page, PageRevision
 
 register = template.Library()
@@ -18,6 +19,10 @@ def get_page_instance(context):
             page = context[name]
             if isinstance(page, Page):
                 return page
+
+@register.simple_tag
+def wagtailcommerce_version():
+    return __version__
 
 @register.simple_tag(takes_context=True)
 def wagtailcommerce_product_index(context):
