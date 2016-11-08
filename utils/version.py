@@ -11,19 +11,18 @@ from django.utils.lru_cache import lru_cache
 
 def get_version(version=None):
     "Returns a PEP 440-compliant version number from VERSION."
-
-    if version is None:
-        return "%s.%s" % ('dev', get_git_changeset_timestamp())
+    version = get_complete_version(version)
 
     # Now build the two parts of the version number:
     # main = X.Y[.Z]
     # sub = .devN - for pre-alpha releases
     #     | {a|b|rc}N - for alpha, beta, and rc releases
+
     main = get_main_version(version)
 
     sub = ''
     if version[3] == 'alpha' and version[4] == 0:
-        git_changeset = get_git_changeset_timestamp()
+        git_changeset = get_git_changeset()
         if git_changeset:
             sub = '.dev%s' % git_changeset
 
@@ -46,7 +45,7 @@ def get_complete_version(version=None):
     then checks for correctness of the tuple provided.
     """
     if version is None:
-        from django import VERSION as version
+        from wagtailcommerce import VERSION as version
     else:
         assert len(version) == 5
         assert version[3] in ('alpha', 'beta', 'rc', 'final')
@@ -63,7 +62,7 @@ def get_docs_version(version=None):
 
 
 @lru_cache()
-def get_git_changeset_timestamp():
+def get_git_changeset():
     """Returns a numeric identifier of the latest git changeset.
 
     The result is the UTC timestamp of the changeset in YYYYMMDDHHMMSS format.
