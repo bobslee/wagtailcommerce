@@ -43,9 +43,8 @@ commerce_menu = Menu(register_hook_name='register_commerce_menu_item')
 @hooks.register('register_admin_menu_item')
 def register_commerce_menu():
     return CommerceMenuItem(
-        _('Commerce'), commerce_menu,
+        _('Apps'), commerce_menu,
         classnames='icon icon-fa-cubes', order=100000,
-        attrs={'title': _("Commerce Apps")},
     )
 
 class CommerceAdminMenuItem(MenuItem):
@@ -55,10 +54,9 @@ class CommerceAdminMenuItem(MenuItem):
 @hooks.register('register_commerce_menu_item')
 def register_admin_menu_item():
     return CommerceAdminMenuItem(
-        _('Apps list'),
+        _('Commerce'),
         reverse('admin:app_list', kwargs={'app_label': 'wagtailcommerce'}),
-        classnames='icon icon-fa-cubes',
-        attrs={'title': _("Commerce apps list (admin)")},
+        classnames='icon icon-fa-cube app-item app-item-first',
         order=100
     )
 
@@ -71,7 +69,6 @@ def register_product_menu_item():
     return ProductAdminMenuItem(
         _('Products'),
         reverse('admin:wagtailcommerce_product_changelist'),
-        classnames='icon icon-fa-cube',
-        attrs={'title': _("Products (admin)")},
+        classnames='icon icon-fa-product-hunt',
         order=700
     )
