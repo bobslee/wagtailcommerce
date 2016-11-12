@@ -2,14 +2,14 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from wagtail.wagtailcore.models import Page
-from wagtail.wagtailcore.fields import RichTextField
+from wagtail.wagtailcore.fields import RichTextField, StreamField
 from wagtail.wagtailadmin.edit_handlers import TabbedInterface, ObjectList
-from wagtail.wagtailadmin.edit_handlers import MultiFieldPanel, FieldPanel
+from wagtail.wagtailadmin.edit_handlers import FieldPanel, MultiFieldPanel, StreamFieldPanel
 
 import moneyed
 from djmoney.models.fields import MoneyField
 
-from .admin_page import AdminProductPageForm
+from .blocks import ProductStreamBlock
 from .edit_handlers import add_panel_to_edit_handler, ProductPanel
 
 class CommercePage(Page):
@@ -37,6 +37,13 @@ class ProductPage(Page):
     parent_page_types = ['ProductIndexPage']
     subpage_types = []
     is_creatable = False
+
+    body = StreamField(ProductStreamBlock())
+
+    content_panels = [
+        FieldPanel('title', classname="full title"),
+        StreamFieldPanel('body'),
+    ]
 
     def __str__(self):
         return "%s" % (self.title)
