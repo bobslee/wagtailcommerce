@@ -23,8 +23,10 @@ def page_listing_buttons(page, page_perms, is_parent=False):
         )
         
         yield wagtailadmin_widgets.PageListingButton(
-            "commerce admin",
+            "product",
             url,
+            classes=('icon', 'icon-fa-product-hunt'),
+            attrs={'title': _('Edit product in the Commerce admin ')},
             priority=100,
         )
 
