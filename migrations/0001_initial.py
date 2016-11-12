@@ -37,8 +37,8 @@ class Migration(migrations.Migration):
                 ('description', models.TextField(blank=True, help_text='For admin/backoffice purposes only.', verbose_name='description')),
                 ('sale_price_currency', djmoney.models.fields.CurrencyField(choices=[('EUR', 'Euro')], default='XYZ', editable=False, max_length=3)),
                 ('cost_price_currency', djmoney.models.fields.CurrencyField(choices=[('EUR', 'Euro')], default='XYZ', editable=False, max_length=3)),
-                ('sale_price', djmoney.models.fields.MoneyField(decimal_places=2, default=Decimal('0.0'), max_digits=10)),
-                ('cost_price', djmoney.models.fields.MoneyField(decimal_places=2, default=Decimal('0.0'), max_digits=10)),
+                ('sale_price', djmoney.models.fields.MoneyField(decimal_places=2, default=Decimal('0.0'), help_text='Base price to compute the customer price. Sometimes called the catalog price.', max_digits=10)),
+                ('cost_price', djmoney.models.fields.MoneyField(decimal_places=2, default=Decimal('0.0'), help_text='Cost of the product.', max_digits=10)),
             ],
         ),
         migrations.CreateModel(
