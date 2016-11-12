@@ -30,7 +30,7 @@ def page_listing_buttons(page, page_perms, is_parent=False):
 
 @hooks.register('insert_global_admin_css')
 def global_admin_css():
-    return format_html('<link rel="stylesheet" href="{}">', static('wagtailcommerce/css/wagtailadmin/core.css'))
+    return format_html('<link rel="stylesheet" href="{}">', static('wagtailadmin/core.css'))
 
 class CommerceMenuItem(SubmenuMenuItem):
     template = 'wagtailcommerce/menu_commerce_menu_item.html'
@@ -43,8 +43,8 @@ commerce_menu = Menu(register_hook_name='register_commerce_menu_item')
 @hooks.register('register_admin_menu_item')
 def register_commerce_menu():
     return CommerceMenuItem(
-        _('Apps'), commerce_menu,
-        classnames='icon icon-fa-cubes', order=100000,
+        _('Commerce'), commerce_menu,
+        classnames='icon icon-fa-cube', order=100000,
     )
 
 class CommerceAdminMenuItem(MenuItem):
@@ -54,9 +54,9 @@ class CommerceAdminMenuItem(MenuItem):
 @hooks.register('register_commerce_menu_item')
 def register_admin_menu_item():
     return CommerceAdminMenuItem(
-        _('Commerce'),
+        _('Admin'),
         reverse('admin:app_list', kwargs={'app_label': 'wagtailcommerce'}),
-        classnames='icon icon-fa-cube app-item app-item-first',
+        classnames='icon icon-fa-cube',
         order=100
     )
 
