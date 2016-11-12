@@ -54,9 +54,9 @@ class CommerceAdminMenuItem(MenuItem):
 @hooks.register('register_commerce_menu_item')
 def register_admin_menu_item():
     return CommerceAdminMenuItem(
-        _('Admin'),
+        _('Commerce'),
         reverse('admin:app_list', kwargs={'app_label': 'wagtailcommerce'}),
-        classnames='icon icon-fa-cube',
+        classnames='icon icon-fa-home',
         order=100
     )
 
