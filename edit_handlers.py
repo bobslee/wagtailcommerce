@@ -9,7 +9,7 @@ from django.contrib.admin.utils import quote
 
 from wagtail.wagtailadmin.edit_handlers import EditHandler, ObjectList, get_edit_handler
 
-def add_panel_to_edit_handler(model, panel_cls, heading, index=None):
+def add_panel_to_edit_handler(model, panel_cls, heading, classname="", index=None):
     """
     Adds specified panel class to model class.
 
@@ -22,7 +22,8 @@ def add_panel_to_edit_handler(model, panel_cls, heading, index=None):
     
     panel_instance  = ObjectList(
         [panel_cls(),],
-        heading = heading
+        heading=heading,
+        classname=classname,
     ).bind_to_model(model)
 
     if index:

@@ -10,3 +10,21 @@ li.menu-item a.app-item {
 li.menu-item a.app-item-first {
     border-top: 0;
 }
+
+.tab-nav li.commerce a {
+    padding-left: 2em;
+    padding-right: 2em;
+}
+
+.tab-nav li.commerce a:before {
+  font-family: FontAwesome;
+  vertical-align: middle;
+  text-transform: none;
+  content: "\f1b2";
+  margin-right: 0.5em;
+  /* padding-bottom: 3px; */
+  /* font-size: 1.2em; */
+  font-weight: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

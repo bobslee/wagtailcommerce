@@ -2,7 +2,7 @@ from django.contrib import admin
 from django import forms
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
-from django.forms.widgets import HiddenInput
+from django.forms.widgets import HiddenInput, Textarea
 from django.db.models import Q
 
 from .models import Product, ProductPage
@@ -19,6 +19,11 @@ class ProductAdminForm(forms.ModelForm):
       super(ProductAdminForm, self).__init__(*args, **kwargs)
 
       self.set_product_page_queryset()
+
+      self.fields['sku'].required = False
+      self.fields['ean'].required = False
+      self.fields['sale_price'].required = False
+      self.fields['cost_price'].required = False
 
       if hasattr(self.instance, 'product_page') and self.instance.product_page:
          self.fields['add_product_page'].widget = HiddenInput()
@@ -52,14 +57,24 @@ class ProductAdminForm(forms.ModelForm):
 
    class Meta:
       model = Product
-      fields = ['title', 'description', 'sale_price', 'cost_price', 'product_page']
+      fields = ['title', 'description', 'sale_price', 'cost_price', 'product_page', 'sku', 'ean']
+      widgets = {'description': Textarea(attrs={'cols': 60, 'rows': 2})}
 
 class ProductAdmin(admin.ModelAdmin):
    form = ProductAdminForm
-   list_display = ['title', 'product_page']
+   list_display = ['title', 'sale_price', 'product_page', 'sku', 'ean']
+   list_select_related = ('product_page',)
+   list_filter = ['title']
+   search_fields = ['title', 'description', 'sku', 'ean']
    fieldsets = (
       (None, {
-         'fields': ('title', 'description', 'sale_price', 'cost_price'),
+         'fields': ('title', 'description'),
+      }),
+      ('Price', {
+         'fields': ('sale_price', 'cost_price'),
+      }),
+      ('Codes', {
+         'fields': ('sku', 'ean'),
       }),
       ('CMS', {
          'fields': ('add_product_page', 'product_page'),
@@ -73,6 +88,13 @@ class ProductAdmin(admin.ModelAdmin):
          product.create(form.cleaned_data)
       else:
          product.update(form.cleaned_data)
+
+   ## TODO: query Product.product_page => wagtailcore_page => wagtailcore_pagerevision
+   # def get_search_results(self, request, queryset, search_term):
+   #   queryset, use_distinct = super(ProductAdmin, self).get_search_results(request, queryset, search_term)
+   #   
+   #   queryset |= self.model.objects.filter(content_json=search_term)
+   #   return queryset, use_distinct
 
    def view_on_site(self, obj):
       if obj.product_page:

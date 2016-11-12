@@ -11,6 +11,7 @@ from djmoney.models.fields import MoneyField
 
 from .blocks import ProductStreamBlock
 from .edit_handlers import add_panel_to_edit_handler, ProductPanel
+from .fields import CharNullableField
 
 class CommercePage(Page):
     subpage_types = ['ProductIndexPage']
@@ -48,7 +49,7 @@ class ProductPage(Page):
     def __str__(self):
         return "%s" % (self.title)
 
-add_panel_to_edit_handler(ProductPage, ProductPanel, _('Commerce'))
+add_panel_to_edit_handler(ProductPage, ProductPanel, _('Commerce'), classname="commerce")
 
 class Product(models.Model):
     title = models.CharField(
@@ -71,17 +72,40 @@ class Product(models.Model):
     )
 
     sale_price = MoneyField(
+        blank=True,
+        null=True,
+        default=None,
         max_digits=10,
         decimal_places=2,
         help_text=_("Base price to compute the customer price. Sometimes called the catalog price.")
     )
 
     cost_price = MoneyField(
+        blank=True,
+        null=True,
+        default=None,
         max_digits=10,
         decimal_places=2,
         help_text=_("Cost of the product.")
     )
-    
+
+    sku = CharNullableField(
+        unique=True,
+        null=True,
+        blank=True,
+        max_length=255,
+        verbose_name=_('SKU'),
+        help_text=_('Stock Keeping Unit'),
+    )
+
+    ean = CharNullableField(
+        unique=True,
+        null=True,
+        blank=True,
+        max_length=255,
+        verbose_name=_('EAN'),
+        help_text=_('European Article Number'),
+    )
 
     def __str__(self):
         return "%s" % (self.title)
