@@ -1,0 +1,47 @@
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% if self.body %}
+<section class="product_page_body stream-field container">
+  {% for block in page.body %}
+  
+    {% if block.block_type == 'h2' %}
+    <h2>{{ block }}</h2>
+    
+    {% elif block.block_type == 'h3' %}
+    <h3>{{ block }}</h3>
+    
+    {% elif block.block_type == 'h4' %}
+    <h4>{{ block }}</h4>
+    
+    {% elif block.block_type == 'intro' %}
+    <div class="intro drop-cap">{{ block }}</div>
+    
+    {% elif block.block_type == 'aligned_image' %}
+    <div class="{% if block.value.alignment == "left" or block.value.alignment == "right" %}align-{{ block.value.alignment }}{% else %}{{ block.value.alignment }}-width{% endif %}">
+      <div class="img-holder">
+        {% if block.value.alignment == "left" or block.value.alignment == "right" %}
+        {% image block.value.image width-400 as blockimage %}
+        {% elif block.value.alignment == "half" %}
+        {% image block.value.image width-800 as blockimage %}
+        {% else %}
+        {% image block.value.image width-1280 as blockimage %}
+        {% endif %}
+  
+        <div {% if block.value.attribution %}class="img-credit"{% endif %}>
+          <img src="{{ blockimage.url }}" width="{{ blockimage.width }}" height="{{ blockimage.height }}" alt="{{ blockimage.alt }}" />
+          {% if block.value.attribution %}<p class="credit">{{ block.value.attribution }}</p>{% endif %}
+        </div>
+  
+        {% if block.value.caption %}
+        <p>{{ block.value.caption }}</p>
+        {% endif %}
+      </div>
+    </div>
+    
+    {% else %}
+      {{ block }}
+    {% endif %}
+  
+  {% endfor %}
+</section>
+{% endif %}

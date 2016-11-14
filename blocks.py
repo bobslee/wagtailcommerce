@@ -1,7 +1,8 @@
 from django import forms
 
-from wagtail.wagtailcore.blocks import TextBlock, StructBlock, StreamBlock, FieldBlock, CharBlock, RichTextBlock
+from wagtail.wagtailcore.blocks import CharBlock, FieldBlock, RichTextBlock, TextBlock, StructBlock, StreamBlock
 from wagtail.wagtaildocs.blocks import DocumentChooserBlock
+from wagtail.wagtailembeds.blocks import EmbedBlock
 from wagtail.wagtailimages.blocks import ImageChooserBlock
 
 class ImageFormatChoiceBlock(FieldBlock):
@@ -22,4 +23,5 @@ class ProductStreamBlock(StreamBlock):
     intro = TextBlock(icon="pilcrow")
     paragraph = RichTextBlock(icon="pilcrow")
     aligned_image = ImageBlock(label="Aligned image", icon="image")
+    embed = EmbedBlock()
     document = DocumentChooserBlock(icon="doc-full-inverse")

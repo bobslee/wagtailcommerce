@@ -7,6 +7,15 @@
 
 {% block content %}
 {% block product_page_heading %}
-    <h3>{{ page.title }}</h3>
+<!-- <h2>{{ page.title }}</h2> -->
 {% endblock %}
+
+{% block body %}
+{% if page.body %}
+<div class="content-body">
+  {% include "wagtailcommerce/product_page_body_streamfield.html" with content=self.body %}
+</div>
+{% endif %}
+{% endblock %}
+
 {% endblock %}
