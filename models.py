@@ -9,6 +9,7 @@ from wagtail.wagtailadmin.edit_handlers import FieldPanel, MultiFieldPanel, Stre
 import moneyed
 from djmoney.models.fields import MoneyField
 
+from .admin_page import AdminProductPageForm
 from .blocks import ProductStreamBlock
 from .edit_handlers import add_panel_to_edit_handler, ProductPanel
 from .fields import CharNullableField
@@ -38,6 +39,7 @@ class ProductPage(Page):
     parent_page_types = ['ProductIndexPage']
     subpage_types = []
     is_creatable = False
+    base_form_class=AdminProductPageForm
 
     body = StreamField(ProductStreamBlock())
 

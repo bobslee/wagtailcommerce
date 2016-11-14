@@ -25,3 +25,13 @@ class ProductStreamBlock(StreamBlock):
     aligned_image = ImageBlock(label="Aligned image", icon="image")
     embed = EmbedBlock()
     document = DocumentChooserBlock(icon="doc-full-inverse")
+
+"""
+TODO (BOB HERE):
+1. Implement this block, which adds a title from either:
+  - self.title (which is in sync with Django-admin)
+  - Free input (char)
+2. Validate only one is allowed
+"""
+class ProductTitleBlock(CharBlock):
+    pass

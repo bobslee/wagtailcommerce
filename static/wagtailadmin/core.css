@@ -28,3 +28,12 @@ li.menu-item a.app-item-first {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+input#id_title:disabled,
+input#id_title[disabled],
+input#id_title:disabled:hover,
+input#id_title[disabled]:hover {
+    color: #c6c6c6;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+}

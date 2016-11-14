@@ -1,27 +1,12 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-
 from wagtail.wagtailadmin.forms import WagtailAdminPageForm
 
 class AdminProductPageForm(WagtailAdminPageForm):
-    product_title = forms.CharField(
-        required=False,
-        label=_('Title'),
-    )
-    product_description = forms.CharField(
-        required=False,
-        label=_('Description'),
-        help_text=_('For admin/backoffice purposes only.')
-    )
 
     def __init__(self, *args, **kwargs):
         super(AdminProductPageForm, self).__init__(*args, **kwargs)
 
-        if not hasattr(self.instance, 'product'):
-            return
-
-        # TODO
-        # - Disable and colorize (to contrast the light-grey)
-        # - Set/copy help_text from the product if any?
-        self.fields['product_title'].initial = self.instance.product.title
-        self.fields['product_description'].initial = self.instance.product.description
+        self.fields['title'].label = "%s - (%s)" % (self.fields['title'].label, _('readonly'))
+        self.fields['title'].disabled = True
+        self.fields['title'].help_text = _('The title can be set/overriden by the ProductTitleBlock in the body.')
