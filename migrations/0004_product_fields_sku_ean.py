@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 
 from django.db import migrations, models
-
+import wagtailcommerce.fields
 
 class Migration(migrations.Migration):
 
@@ -15,11 +15,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='product',
             name='ean',
-            field=models.CharField(blank=True, help_text='European Article Number', max_length=255, null=True, unique=True, verbose_name='EAN'),
+            field=wagtailcommerce.fields.CharNullableField(blank=True, help_text='European Article Number', max_length=255, null=True, unique=True, verbose_name='EAN'),
         ),
         migrations.AddField(
             model_name='product',
             name='sku',
-            field=models.CharField(blank=True, help_text='Stock Keeping Unit', max_length=255, null=True, unique=True, verbose_name='SKU'),
+            field=wagtailcommerce.fields.CharNullableField(blank=True, help_text='Stock Keeping Unit', max_length=255, null=True, unique=True, verbose_name='SKU'),
         ),
     ]
