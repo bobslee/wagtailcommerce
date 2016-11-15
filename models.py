@@ -1,10 +1,11 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from wagtail.wagtailcore.models import Page
-from wagtail.wagtailcore.fields import RichTextField, StreamField
 from wagtail.wagtailadmin.edit_handlers import TabbedInterface, ObjectList
 from wagtail.wagtailadmin.edit_handlers import FieldPanel, MultiFieldPanel, StreamFieldPanel
+from wagtail.wagtailcore.fields import RichTextField, StreamField
+from wagtail.wagtailcore.models import Page
+from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
 
 import moneyed
 from djmoney.models.fields import MoneyField
@@ -39,6 +40,15 @@ class ProductPage(Page):
     subpage_types = []
     is_creatable = False
 
+    # TODO:
+    # Add this image (as small thumb) to wagtailadmin/pages/listing/_list.html
+    image = models.ForeignKey(
+        'wagtailimages.Image',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
     body = StreamField(ProductStreamBlock())
 
     content_panels = [
@@ -49,6 +59,7 @@ class ProductPage(Page):
     def __str__(self):
         return "%s" % (self.title)
 
+ProductPage.promote_panels = [ImageChooserPanel('image')] + ProductPage.promote_panels
 add_panel_to_edit_handler(ProductPage, ProductPanel, _('Commerce'), classname="commerce")
 
 class Product(models.Model):
