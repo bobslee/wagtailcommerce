@@ -8,7 +8,7 @@ import wagtailcommerce.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wagtailcommerce', '0003_product_page_field_body'),
+        ('wagtailcommerce', '0003_productpage_field_body'),
     ]
 
     operations = [
