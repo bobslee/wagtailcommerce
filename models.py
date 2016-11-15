@@ -1,15 +1,17 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from wagtail.wagtailcore.models import Page
-from wagtail.wagtailcore.fields import RichTextField, StreamField
 from wagtail.wagtailadmin.edit_handlers import TabbedInterface, ObjectList
-from wagtail.wagtailadmin.edit_handlers import FieldPanel, MultiFieldPanel, StreamFieldPanel
+from wagtail.wagtailadmin.edit_handlers import FieldPanel, InlinePanel, MultiFieldPanel, StreamFieldPanel
+from wagtail.wagtailcore.blocks import ListBlock
+from wagtail.wagtailcore.fields import RichTextField, StreamField
+from wagtail.wagtailcore.models import Page
+from wagtail.wagtailimages.blocks import ImageChooserBlock
 
 import moneyed
 from djmoney.models.fields import MoneyField
 
-from .blocks import ProductStreamBlock
+from .blocks import ImageCarouselStreamBlock, ProductStreamBlock
 from .edit_handlers import add_panel_to_edit_handler, ProductPanel
 from .fields import CharNullableField
 
@@ -39,10 +41,12 @@ class ProductPage(Page):
     subpage_types = []
     is_creatable = False
 
+    images = StreamField(ImageCarouselStreamBlock())
     body = StreamField(ProductStreamBlock())
 
     content_panels = [
         FieldPanel('title', classname="full title"),
+        StreamFieldPanel('images'),
         StreamFieldPanel('body'),
     ]
 

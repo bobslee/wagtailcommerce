@@ -1,6 +1,6 @@
 from django import forms
 
-from wagtail.wagtailcore.blocks import CharBlock, FieldBlock, RichTextBlock, TextBlock, StructBlock, StreamBlock
+from wagtail.wagtailcore.blocks import CharBlock, FieldBlock, ListBlock, RichTextBlock, TextBlock, StructBlock, StreamBlock
 from wagtail.wagtaildocs.blocks import DocumentChooserBlock
 from wagtail.wagtailembeds.blocks import EmbedBlock
 from wagtail.wagtailimages.blocks import ImageChooserBlock
@@ -15,6 +15,16 @@ class ImageBlock(StructBlock):
     alignment = ImageFormatChoiceBlock()
     caption = CharBlock()
     attribution = CharBlock(required=False)
+
+class ImageCarouselItemBlock(StructBlock):
+    image = ImageChooserBlock()
+    caption = CharBlock()
+
+    class Meta:
+        icon = "image"
+    
+class ImageCarouselStreamBlock(StreamBlock):
+    image = ImageCarouselItemBlock(label="image", icon="image")
 
 class ProductStreamBlock(StreamBlock):
     h2 = CharBlock(icon="title", classname="title")
