@@ -34,7 +34,8 @@ class ProductService(object):
         else:
             if 'product_page' in data:
                 self.product.product_page = data['product_page']
-            elif 'title' in data:
+            
+            if 'title' in data:
                 """
                 Which doesn't update the product_page it's title if product_page
                 (ForeignKey) was set in data - Hence the py:elif
