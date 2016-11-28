@@ -1,0 +1,41 @@
+{% load i18n %}
+{% comment %}
+    Either the chosen or unchosen div will be shown, depending on the presence
+    of the 'blank' class on the container.
+
+    Any element with the 'action-choose' class will open the page chooser modal
+    when clicked.
+{% endcomment %}
+
+<div id="{{ attrs.id }}-chooser" class="chooser-create chooser {% block chooser_class %}page-chooser{% endblock %} {% if not value %}blank{% endif %}">
+
+    <div class="chosen">
+        {% block chosen_state_view %}
+            <span class="title">{{ instance.title }}</span>
+        {% endblock %}
+
+        <ul class="actions">
+            {% if not widget.is_required %}
+                <li><button type="button" class="button action-clear button-small button-secondary">{{ widget.clear_choice_text }}</button></li>
+            {% endif %}
+            <li><button type="button" class="button action-choose button-small button-secondary">{{ widget.choose_another_text }}</button></li>
+            {% if widget.show_edit_link and not instance.id is None %}
+                <li><a href="{% url 'wagtailadmin_pages:edit' instance.id %}" class="edit-link button button-small button-secondary" target="_blank">{{ widget.link_to_chosen_text }}</a></li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <div class="unchosen">
+      <div class="chooser-create-page">
+        <label for="{{ attrs.id }}-create">
+          {{ widget.create_text }}
+        </label>
+        <input id="{{ attrs.id }}-create" name="create_page" type="checkbox"/>
+      </div>
+
+      <button type="button" class="button action-choose button-small button-secondary">{{ widget.choose_one_text }}</button>
+    </div>
+
+</div>
+
+{{ original_field_html }}

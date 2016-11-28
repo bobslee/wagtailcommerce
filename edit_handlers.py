@@ -7,9 +7,13 @@ from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
 from django.contrib.admin.utils import quote
 
-from wagtail.wagtailadmin.edit_handlers import EditHandler, ObjectList, get_edit_handler
+from wagtail.wagtailadmin.edit_handlers import (
+    BasePageChooserPanel, PageChooserPanel,
+    EditHandler, ObjectList,
+    get_edit_handler
+)
 
-# from .utils.text import camel_case_to_underscores
+from .widgets import AdminPageChooserOrCreate
 
 def add_panel_to_edit_handler(model, panel_cls, heading, classname="", index=None):
     """
@@ -51,7 +55,7 @@ class BaseProductPanel(EditHandler):
 
         # TODO and if user has_permission for (django)admin product_change
         if getattr(self.instance, 'product', False) != False:
-            admin_url = reverse('admin:wagtailcommerce_product_change',
+            admin_url = reverse('wagtailcommerce_product_modeladmin_edit',
                           args=(quote(self.instance.product.pk),),
                           current_app='wagtailcommerce',
             )
@@ -67,3 +71,19 @@ class ProductPanel(object):
     def bind_to_model(model):
         base = {'model': model}
         return type(str('_ProductPanel'), (BaseProductPanel,), base)
+
+class BasePageChooserOrCreatePanel(BasePageChooserPanel):
+    @classmethod
+    def widget_overrides(cls):
+        return {cls.field_name: AdminPageChooserOrCreate(
+            target_models=cls.target_models(),
+            can_choose_root=cls.can_choose_root)}
+
+class PageChooserOrCreatePanel(PageChooserPanel):
+    def bind_to_model(self, model):
+        return type(str('_PageChooserOrCreatePanel'), (BasePageChooserOrCreatePanel,), {
+            'model': model,
+            'field_name': self.field_name,
+            'page_type': self.page_type,
+            'can_choose_root': self.can_choose_root,
+        })

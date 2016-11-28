@@ -1,17 +1,22 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from wagtail.wagtailadmin.edit_handlers import TabbedInterface, ObjectList
+from wagtail.wagtailadmin.edit_handlers import TabbedInterface, ObjectList, PageChooserPanel
 from wagtail.wagtailadmin.edit_handlers import FieldPanel, MultiFieldPanel, StreamFieldPanel
 from wagtail.wagtailcore.fields import RichTextField, StreamField
 from wagtail.wagtailcore.models import Page
 from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
 
+from wagtail.wagtailadmin.edit_handlers import (
+    FieldPanel, FieldRowPanel, MultiFieldPanel, StreamFieldPanel,
+    TabbedInterface, ObjectList
+)
+
 import moneyed
 from djmoney.models.fields import MoneyField
 
 from .blocks import ProductStreamBlock
-from .edit_handlers import add_panel_to_edit_handler, ProductPanel
+from .edit_handlers import add_panel_to_edit_handler, ProductPanel, PageChooserOrCreatePanel
 from .fields import CharNullableField
 
 class CommercePage(Page):
@@ -63,6 +68,7 @@ ProductPage.promote_panels = [ImageChooserPanel('image')] + ProductPage.promote_
 add_panel_to_edit_handler(ProductPage, ProductPanel, _('Commerce'), classname="commerce")
 
 class Product(models.Model):
+
     title = models.CharField(
         unique=True,
         max_length=255,
@@ -73,6 +79,14 @@ class Product(models.Model):
         blank=True,
         verbose_name=_('description'),
         help_text=_('For admin/backoffice purposes only.')
+    )
+
+    image = models.ForeignKey(
+        'wagtailimages.Image',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
     )
 
     product_page = models.OneToOneField(
@@ -117,6 +131,42 @@ class Product(models.Model):
         verbose_name=_('EAN'),
         help_text=_('European Article Number'),
     )
+
+    general_panels = [
+        FieldPanel('title'),
+        ImageChooserPanel('image'),
+        MultiFieldPanel(
+            [
+                FieldPanel('sale_price', classname='fn'),
+                FieldPanel('cost_price', classname='ln'),
+            ],
+            heading='Price',
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel('sku'),
+                FieldPanel('ean'),
+            ],
+            heading='Codes',
+        ),
+        FieldPanel('description'),
+    ]
+
+    sales_panels = [
+        PageChooserOrCreatePanel('product_page'),
+        # categories
+        # alternative products
+        # accessoires/options
+        # invoice confirm email (PageChooser)
+    ]
+
+    edit_handler = TabbedInterface([
+        ObjectList(general_panels, heading='General'),
+        ObjectList(sales_panels, heading='Sales'),
+        # ObjectList([], heading='Inventory'),
+        # ObjectList([], heading='Shipping'),
+        # ObjectList([], heading='Attributes'),
+    ])
 
     def __str__(self):
         return "%s" % (self.title)

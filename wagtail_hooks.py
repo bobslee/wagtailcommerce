@@ -1,19 +1,97 @@
 from django.contrib.admin.utils import quote
+from django.core import urlresolvers
+from django.shortcuts import get_object_or_404, redirect, render
 from django.templatetags.static import static
 from django.urls import reverse
-from django.utils.html import format_html
+from django.utils.html import format_html, format_html_join
+from django.utils.text import capfirst
 from django.utils.translation import ugettext_lazy as _
 
 from wagtail.wagtailcore import hooks
-from wagtail.wagtailadmin import widgets as wagtailadmin_widgets
+from wagtail.wagtailcore.models import Page
+from wagtail.wagtailadmin import messages, widgets as wagtailadmin_widgets
 from wagtail.wagtailadmin.menu import Menu, MenuItem, SubmenuMenuItem, settings_menu
+from wagtail.wagtailadmin.edit_handlers import FieldPanel, FieldRowPanel, MultiFieldPanel, StreamFieldPanel, TabbedInterface, ObjectList
 
-from .models import ProductPage
+from wagtail.contrib.modeladmin.options import ModelAdmin, ModelAdminGroup, modeladmin_register
+from wagtail.contrib.modeladmin.views import CreateView, EditView
+
+from .models import ProductIndexPage, ProductPage, Product
 from .admin import has_admin_perm
+
+class ProductCreateView(CreateView):
+    
+    def form_valid(self, form):
+        instance = form.save()
+
+        if form.data.get('create_page', False) == 'on':
+            parent_page = Page.objects.type(ProductIndexPage).first()
+            product_page = ProductPage(
+                title = instance.title,
+                image = instance.image,
+            )
+        
+            parent_page.add_child(instance=product_page)
+            instance.product_page = product_page
+            instance.save()
+        
+        messages.success(
+            self.request, self.get_success_message(instance),
+            buttons=self.get_success_message_buttons(instance)
+        )
+        return redirect(self.get_success_url())
+
+class ProductEditView(EditView):
+
+    def get_page_title(self):
+        return "%s %s" % (self.page_title, self.opts.verbose_name)
+    
+    def form_valid(self, form):
+        instance = form.save()
+
+        if form.data.get('create_page', False) == 'on':
+            parent_page = Page.objects.type(ProductIndexPage).first()
+            product_page = ProductPage(
+                title = instance.title,
+                image = instance.image,
+            )
+        
+            parent_page.add_child(instance=product_page)
+            instance.product_page = product_page
+            instance.save()
+        else:
+            if form.data.get('image'):
+                instance.product_page.image = instance.image
+                instance.product_page.save()
+        
+        messages.success(
+            self.request, self.get_success_message(instance),
+            buttons=self.get_success_message_buttons(instance)
+        )
+        return redirect(self.get_success_url())
+
+class ProductModelAdmin(ModelAdmin):
+    model = Product
+    create_view_class = ProductCreateView
+    edit_view_class = ProductEditView
+    menu_icon = 'fa-product-hunt'
+
+    # TODO: add date_published (from ProductPage)
+    list_display = ['title', 'image', 'sale_price', 'product_page', 'sku', 'ean']
+    search_fields = ('title', 'product_page', 'sku', 'ean',)
+    form_view_extra_css = [static('wagtailcommerce/css/core.css')]
+
+class CommerceModelAdminGroup(ModelAdminGroup):
+    menu_label = _('Commerce')
+    menu_icon = 'fa-cube'  # change as required
+    menu_order = 200  # will put in 3rd place (000 being 1st, 100 2nd)
+    items = (ProductModelAdmin,)
+
+modeladmin_register(CommerceModelAdminGroup)
 
 @hooks.register('register_page_listing_buttons')
 def page_listing_buttons(page, page_perms, is_parent=False):
-    admin_url = 'admin:wagtailcommerce_product_change'
+    admin_url = 'wagtailcommerce_product_modeladmin_edit'
 
     # TODO if user has_permission for (django)admin product_change
     if isinstance(page.specific, ProductPage) and hasattr(page, 'product'):
@@ -30,47 +108,17 @@ def page_listing_buttons(page, page_perms, is_parent=False):
             priority=100,
         )
 
+@hooks.register('insert_editor_js')
+def editor_js():
+    js_files = [
+        static('wagtailcommerce/js/page-chooser-or-create.js'),
+    ]
+    js_includes = format_html_join(
+        '\n', '<script src="{0}"></script>',
+        ((filename, ) for filename in js_files)
+    )
+    return js_includes
+
 @hooks.register('insert_global_admin_css')
 def global_admin_css():
     return format_html('<link rel="stylesheet" href="{}">', static('wagtailadmin/core.css'))
-
-class CommerceMenuItem(SubmenuMenuItem):
-    template = 'wagtailcommerce/menu_commerce_menu_item.html'
-
-    def is_shown(self, request):
-        return has_admin_perm(request.user, 'wagtailcommerce')
-
-commerce_menu = Menu(register_hook_name='register_commerce_menu_item')
-
-@hooks.register('register_admin_menu_item')
-def register_commerce_menu():
-    return CommerceMenuItem(
-        _('Commerce'), commerce_menu,
-        classnames='icon icon-fa-cube', order=100000,
-    )
-
-class CommerceAdminMenuItem(MenuItem):
-    def is_shown(self, request):
-        return has_admin_perm(request.user, 'wagtailcommerce')
-
-@hooks.register('register_commerce_menu_item')
-def register_admin_menu_item():
-    return CommerceAdminMenuItem(
-        _('Commerce'),
-        reverse('admin:app_list', kwargs={'app_label': 'wagtailcommerce'}),
-        classnames='icon icon-fa-home',
-        order=100
-    )
-
-class ProductAdminMenuItem(MenuItem):
-    def is_shown(self, request):
-        return has_admin_perm(request.user, 'wagtailcommerce', 'product')
-
-@hooks.register('register_commerce_menu_item')
-def register_product_menu_item():
-    return ProductAdminMenuItem(
-        _('Products'),
-        reverse('admin:wagtailcommerce_product_changelist'),
-        classnames='icon icon-fa-product-hunt',
-        order=700
-    )
