@@ -1,91 +1,22 @@
 from django.contrib.admin.utils import quote
-from django.core import urlresolvers
-from django.shortcuts import get_object_or_404, redirect, render
+#from django.core import urlresolvers
+#from django.shortcuts import get_object_or_404, redirect, render
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.html import format_html, format_html_join
-from django.utils.text import capfirst
 from django.utils.translation import ugettext_lazy as _
 
 from wagtail.wagtailcore import hooks
-from wagtail.wagtailcore.models import Page
-from wagtail.wagtailadmin import messages, widgets as wagtailadmin_widgets
-from wagtail.wagtailadmin.menu import Menu, MenuItem, SubmenuMenuItem, settings_menu
-from wagtail.wagtailadmin.edit_handlers import FieldPanel, FieldRowPanel, MultiFieldPanel, StreamFieldPanel, TabbedInterface, ObjectList
+from wagtail.wagtailadmin import widgets as wagtailadmin_widgets
 
-from wagtail.contrib.modeladmin.options import ModelAdmin, ModelAdminGroup, modeladmin_register
-from wagtail.contrib.modeladmin.views import CreateView, EditView
+#from wagtail.wagtailadmin.menu import Menu, MenuItem, SubmenuMenuItem, settings_menu
+#from wagtail.wagtailadmin.edit_handlers import FieldPanel, FieldRowPanel, MultiFieldPanel, StreamFieldPanel, TabbedInterface, ObjectList
 
-from .models import ProductIndexPage, ProductPage, Product
+from wagtail.contrib.modeladmin.options import modeladmin_register
+
 from .admin import has_admin_perm
-
-class ProductCreateView(CreateView):
-    
-    def form_valid(self, form):
-        instance = form.save()
-
-        if form.data.get('create_page', False) == 'on':
-            parent_page = Page.objects.type(ProductIndexPage).first()
-            product_page = ProductPage(
-                title = instance.title,
-                image = instance.image,
-            )
-        
-            parent_page.add_child(instance=product_page)
-            instance.product_page = product_page
-            instance.save()
-        
-        messages.success(
-            self.request, self.get_success_message(instance),
-            buttons=self.get_success_message_buttons(instance)
-        )
-        return redirect(self.get_success_url())
-
-class ProductEditView(EditView):
-
-    def get_page_title(self):
-        return "%s %s" % (self.page_title, self.opts.verbose_name)
-    
-    def form_valid(self, form):
-        instance = form.save()
-
-        if form.data.get('create_page', False) == 'on':
-            parent_page = Page.objects.type(ProductIndexPage).first()
-            product_page = ProductPage(
-                title = instance.title,
-                image = instance.image,
-            )
-        
-            parent_page.add_child(instance=product_page)
-            instance.product_page = product_page
-            instance.save()
-        else:
-            if form.data.get('image'):
-                instance.product_page.image = instance.image
-                instance.product_page.save()
-        
-        messages.success(
-            self.request, self.get_success_message(instance),
-            buttons=self.get_success_message_buttons(instance)
-        )
-        return redirect(self.get_success_url())
-
-class ProductModelAdmin(ModelAdmin):
-    model = Product
-    create_view_class = ProductCreateView
-    edit_view_class = ProductEditView
-    menu_icon = 'fa-product-hunt'
-
-    # TODO: add date_published (from ProductPage)
-    list_display = ['title', 'image', 'sale_price', 'product_page', 'sku', 'ean']
-    search_fields = ('title', 'product_page', 'sku', 'ean',)
-    form_view_extra_css = [static('wagtailcommerce/css/core.css')]
-
-class CommerceModelAdminGroup(ModelAdminGroup):
-    menu_label = _('Commerce')
-    menu_icon = 'fa-cube'  # change as required
-    menu_order = 200  # will put in 3rd place (000 being 1st, 100 2nd)
-    items = (ProductModelAdmin,)
+from .models import ProductPage
+from .modeladmin import CommerceModelAdminGroup
 
 modeladmin_register(CommerceModelAdminGroup)
 
