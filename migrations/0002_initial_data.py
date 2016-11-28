@@ -14,14 +14,14 @@ def initial_data(apps, schema_editor):
     root_page = Page.objects.get(slug='root')
     
     commerce_page = CommercePage(
-        title="Commerce",
+        title="Commerce page",
         body="This is the main Commerce Page. Ensure it's moved under a Site Root Page."
     )
 
     root_page.add_child(instance=commerce_page)
 
     product_index_page = ProductIndexPage(
-        title="Products",
+        title="Product pages",
     )
 
     commerce_page.add_child(instance=product_index_page)

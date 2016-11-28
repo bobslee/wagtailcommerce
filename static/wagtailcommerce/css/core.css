@@ -1,0 +1,25 @@
+@charset "UTF-8";
+
+.chooser-create-page {
+    float: left;
+    height: 2em;
+    padding-top: 0.5em;
+    padding-right: 0.5em;
+}
+
+.chooser-create-page label {
+    float: left;
+    width: auto;
+    clear: none;
+    padding-right: 1em;
+}
+
+.chooser-create-page .input {
+    float: left;
+    clear: none;
+}
+
+.chooser-create-page .input input {
+    float: left;
+    clear: none;
+}
