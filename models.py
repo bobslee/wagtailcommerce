@@ -16,7 +16,10 @@ import moneyed
 from djmoney.models.fields import MoneyField
 
 from .blocks import ProductStreamBlock
-from .edit_handlers import add_panel_to_edit_handler, ProductPanel, PageChooserOrCreatePanel
+from .edit_handlers import (
+    add_panel_to_edit_handler,
+    ProductPageImagesPanel, ProductPageCommercePanel, PageChooserOrCreatePanel
+)
 from .fields import CharNullableField
 
 class CommercePage(Page):
@@ -52,7 +55,8 @@ class ProductPage(Page):
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        related_name='+'
+        related_name='+',
+        verbose_name=('featured image'),
     )
     body = StreamField(ProductStreamBlock())
 
@@ -64,8 +68,8 @@ class ProductPage(Page):
     def __str__(self):
         return "%s" % (self.title)
 
-ProductPage.promote_panels = [ImageChooserPanel('image')] + ProductPage.promote_panels
-add_panel_to_edit_handler(ProductPage, ProductPanel, _('Commerce'), classname="commerce")
+add_panel_to_edit_handler(ProductPage, ProductPageCommercePanel, _('Commerce'), classname="commerce")
+add_panel_to_edit_handler(ProductPage, ProductPageImagesPanel, _('Images'), classname="image", index=3)
 
 class Product(models.Model):
 

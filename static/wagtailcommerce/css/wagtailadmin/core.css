@@ -1,0 +1,25 @@
+@charset "UTF-8";
+
+.tab-nav li.image a:before {
+  font-family: FontAwesome;
+  vertical-align: middle;
+  text-transform: none;
+  content: "\f03e"; 
+  margin-right: 0.5em;
+  /* font-size: 1.2em; */
+  font-weight: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.tab-nav li.commerce a:before {
+  font-family: FontAwesome;
+  vertical-align: middle;
+  text-transform: none;
+  content: "\f1b2";
+  margin-right: 0.5em;
+  /* font-size: 1.2em; */
+  font-weight: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

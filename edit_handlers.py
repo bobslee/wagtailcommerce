@@ -6,12 +6,15 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 from django.urls import reverse
 from django.contrib.admin.utils import quote
+from django.utils.translation import ugettext_lazy
 
 from wagtail.wagtailadmin.edit_handlers import (
-    BasePageChooserPanel, PageChooserPanel,
+    BasePageChooserPanel, PageChooserPanel, FieldPanel, MultiFieldPanel,
     EditHandler, ObjectList,
     get_edit_handler
 )
+
+from wagtail.wagtailimages.edit_handlers import ImageChooserPanel
 
 from .widgets import AdminPageChooserOrCreate
 
@@ -41,11 +44,11 @@ def add_panel_to_edit_handler(model, panel_cls, heading, classname="", index=Non
     else:
         edit_handler.children.append(panel_instance)
 
-class BaseProductPanel(EditHandler):
+class BaseProductPageCommercePanel(EditHandler):
     template = 'wagtailcommerce/edit_handlers/product.html'
 
     def __init__(self, instance=None, form=None):
-        super(BaseProductPanel, self).__init__(instance, form)
+        super(BaseProductPageCommercePanel, self).__init__(instance, form)
         self.instance = instance
 
     def render(self):
@@ -66,11 +69,11 @@ class BaseProductPanel(EditHandler):
             render_to_string(self.template, context)
         )
 
-class ProductPanel(object):
+class ProductPageCommercePanel(object):
     @staticmethod
     def bind_to_model(model):
         base = {'model': model}
-        return type(str('_ProductPanel'), (BaseProductPanel,), base)
+        return type(str('_ProductPageCommercePanel'), (BaseProductPageCommercePanel,), base)
 
 class BasePageChooserOrCreatePanel(BasePageChooserPanel):
     @classmethod
@@ -87,3 +90,8 @@ class PageChooserOrCreatePanel(PageChooserPanel):
             'page_type': self.page_type,
             'can_choose_root': self.can_choose_root,
         })
+
+def ProductPageImagesPanel():
+    return MultiFieldPanel([
+        ImageChooserPanel('image'),
+    ], ugettext_lazy('Images'),)

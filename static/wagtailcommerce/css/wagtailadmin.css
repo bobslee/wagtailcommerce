@@ -1,0 +1,13 @@
+@charset "UTF-8";
+
+.tab-nav li.image a:before {
+  font-family: wagtail;
+  vertical-align: middle;
+  text-transform: none;
+  content: 'w';
+  margin-right: 0.5em;
+  font-size: 1.2em;
+  font-weight: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
