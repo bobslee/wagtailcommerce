@@ -1,6 +1,4 @@
 from django.contrib.admin.utils import quote
-#from django.core import urlresolvers
-#from django.shortcuts import get_object_or_404, redirect, render
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.html import format_html, format_html_join
@@ -8,9 +6,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from wagtail.wagtailcore import hooks
 from wagtail.wagtailadmin import widgets as wagtailadmin_widgets
-
-#from wagtail.wagtailadmin.menu import Menu, MenuItem, SubmenuMenuItem, settings_menu
-#from wagtail.wagtailadmin.edit_handlers import FieldPanel, FieldRowPanel, MultiFieldPanel, StreamFieldPanel, TabbedInterface, ObjectList
 
 from wagtail.contrib.modeladmin.options import modeladmin_register
 
@@ -52,4 +47,4 @@ def editor_js():
 
 @hooks.register('insert_global_admin_css')
 def global_admin_css():
-    return format_html('<link rel="stylesheet" href="{}">', static('wagtailadmin/core.css'))
+    return format_html('<link rel="stylesheet" href="{}">', static('wagtailcommerce/css/wagtailadmin/core.css'))
