@@ -5,7 +5,7 @@
 
   {% block product_list_item_thumbnail %}
   <div class="product-list-item-thumbnail">
-    <a href="{{ product_page.url }}" title="{{ product_page.image.title }}">
+    <a href="{{ product_page.slug }}" title="{{ product_page.image.title }}">
       {% if product_page.image %}
         {% image product_page.image fill-100x100 %}
       {% endif %}
@@ -16,7 +16,7 @@
   {% block product_list_item_details %}
   <div class="product-list-item-details">
     <h4>
-      <a href="{{ product_page.url}}" title="More info about the {{ product_page.title }}">
+      <a href="{{ product_page.slug }}" title="More info about the {{ product_page.title }}">
           {{ product_page.title }}
       </a>
     </h4>
