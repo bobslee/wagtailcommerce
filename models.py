@@ -23,7 +23,7 @@ from .edit_handlers import (
 from .fields import CharNullableField
 
 class CommercePage(Page):
-    subpage_types = ['ProductIndexPage']
+    subpage_types = ['ProductIndexPage', 'CategoryIndexPage']
     is_creatable = False
 
     body = RichTextField(blank=True)
@@ -35,6 +35,9 @@ class CommercePage(Page):
     def __str__(self):
         return "%s" % (self.title)
 
+"""
+Product
+"""
 class ProductIndexPage(Page):
     parent_page_types = ['CommercePage']
     subpage_types = ['ProductPage']
@@ -85,7 +88,6 @@ add_panel_to_edit_handler(ProductPage, ProductPageCommercePanel, _('Commerce'), 
 add_panel_to_edit_handler(ProductPage, ProductPageImagesPanel, _('Images'), classname="image", index=3)
 
 class Product(models.Model):
-
     title = models.CharField(
         unique=True,
         max_length=255,
@@ -111,6 +113,14 @@ class Product(models.Model):
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
+    )
+
+    categories = models.ManyToManyField(
+        'wagtailcommerce.category',
+        null=True,
+        blank=True,
+        #on_delete=models.SET_NULL,
+        #related_name='categories'
     )
 
     sale_price = MoneyField(
@@ -171,6 +181,7 @@ class Product(models.Model):
 
     sales_panels = [
         PageChooserOrCreatePanel('product_page'),
+        FieldPanel('categories'),
         # categories
         # alternative products
         # accessoires/options
@@ -184,6 +195,93 @@ class Product(models.Model):
         # ObjectList([], heading='Shipping'),
         # ObjectList([], heading='Attributes'),
     ])
+
+    def __str__(self):
+        return "%s" % (self.title)
+
+"""
+Category
+"""
+class CategoryIndexPage(Page):
+    parent_page_types = ['CommercePage']
+    subpage_types = ['CategoryPage']
+    is_creatable = False
+
+    def __str__(self):
+        return "%s" % (self.title)
+
+class CategoryPage(Page):
+    parent_page_types = ['CategoryIndexPage']
+    subpage_types = []
+    is_creatable = False
+
+    # TODO:
+    # Add this image (as small thumb) to wagtailadmin/pages/listing/_list.html
+    image = models.ForeignKey(
+        'wagtailimages.Image',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        verbose_name=('featured image'),
+    )
+    body = StreamField(ProductStreamBlock())
+
+    content_panels = [
+        FieldPanel('title', classname="full title"),
+        StreamFieldPanel('body'),
+    ]
+
+    def __str__(self):
+        return "%s" % (self.title)
+
+#from treebeard.mp_tree import MP_Node
+class Category(models.Model):
+    title = models.CharField(
+        unique=True,
+        max_length=255,
+        verbose_name=_('title')
+    )
+    
+    description = models.TextField(
+        blank=True,
+        verbose_name=_('description'),
+        help_text=_('For admin/backoffice purposes only.')
+    )
+
+    image = models.ForeignKey(
+        'wagtailimages.Image',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
+
+    category_page = models.OneToOneField(
+        CategoryPage,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+    )
+
+    general_panels = [
+        FieldPanel('title'),
+        ImageChooserPanel('image'),
+        FieldPanel('description'),
+    ]
+
+    sales_panels = [
+        PageChooserOrCreatePanel('category_page'),
+    ]
+
+    edit_handler = TabbedInterface([
+        ObjectList(general_panels, heading='General'),
+        ObjectList(sales_panels, heading='Sales'),
+        # products
+    ])
+
+    class Meta:
+        verbose_name_plural = _('categories')
 
     def __str__(self):
         return "%s" % (self.title)
