@@ -47,7 +47,7 @@ class ProductIndexPage(Page):
         return ProductPage.objects.child_of(self).filter(
             live=True,
             product__sale_price__gt=0,
-            image__isnull=False
+            image__isnull=False,
         )        
 
     def get_context(self, request):
