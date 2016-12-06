@@ -1,14 +1,28 @@
 {% extends "base.html" %}
-{% load static %}
+{% load static wagtailimages_tags %}
 
 {% block extra_css %}
 <link rel="stylesheet" type="text/css" href="{% static 'wagtailcommerce/css/product_page.css' %}">
 {% endblock %}
 
 {% block content %}
-{% block product_page_heading %}
-<h2>{{ page.title }}</h2>
+{% block product_page_information %}
+<div class="product-page-information">
+  
+  {% block product_page_heading %}
+  <h2>{{ page.title }}</h2>
+  {% endblock %}
+
+  {% block product_page_image %}
+  <a href="{{ page.url }}" title="{{ page.image.title }}">
+    {% if page.image %}
+      {% image page.image width-400 %}
+    {% endif %}
+  </a>
+  {% endblock %}
+  
 {% endblock %}
+</div>
 
 {% block body %}
 {% if page.body %}
