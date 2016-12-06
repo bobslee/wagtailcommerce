@@ -43,6 +43,19 @@ class ProductIndexPage(Page):
     def __str__(self):
         return "%s" % (self.title)
 
+    def get_products_for_sale(self):
+        return ProductPage.objects.child_of(self).filter(
+            live=True,
+            product__sale_price__gt=0,
+            image__isnull=False
+        )        
+
+    def get_context(self, request):
+        context = super(ProductIndexPage, self).get_context(request)
+
+        context['products_for_sale'] = self.get_products_for_sale()
+        return context
+
 class ProductPage(Page):
     parent_page_types = ['ProductIndexPage']
     subpage_types = []

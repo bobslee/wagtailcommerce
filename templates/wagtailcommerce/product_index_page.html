@@ -4,7 +4,7 @@
 
 {% block product_index %}
     <ul class="product-index">
-      {% for product_page in page.get_children.specific %}
+      {% for product_page in products_for_sale %}
         {% include "wagtailcommerce/product_index_page_product.html" %}
       {% endfor %}
     </div>
