@@ -1,0 +1,20 @@
+{# Used for MP and NS trees #}
+{% extends "modeladmin/index.html" %}
+{% load admin_list admin_tree i18n %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    {% treebeard_css %}
+{% endblock %}
+
+{% block extrahead %}
+    {{ block.super }}
+    {% treebeard_js %}
+{% endblock %}
+
+{% block search %} {% endblock %}
+
+
+{% block result_list %}
+    {% result_tree cl request %}
+{% endblock %}

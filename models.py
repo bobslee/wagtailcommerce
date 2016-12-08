@@ -1,5 +1,10 @@
+from __future__ import absolute_import, unicode_literals
+
 from django.db import models
+from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
+
+from treebeard.mp_tree import MP_Node
 
 from wagtail.wagtailadmin.edit_handlers import TabbedInterface, ObjectList, PageChooserPanel
 from wagtail.wagtailadmin.edit_handlers import FieldPanel, MultiFieldPanel, StreamFieldPanel
@@ -115,13 +120,14 @@ class Product(models.Model):
         on_delete=models.SET_NULL,
     )
 
-    categories = models.ManyToManyField(
-        'wagtailcommerce.category',
-        null=True,
-        blank=True,
-        #on_delete=models.SET_NULL,
-        #related_name='categories'
-    )
+    # # TODO or Parental
+    # categories = models.ManyToManyField(
+    #     'wagtailcommerce.category',
+    #     null=True,
+    #     blank=True,
+    #     #on_delete=models.SET_NULL,
+    #     #related_name='categories'
+    # )
 
     sale_price = MoneyField(
         blank=True,
@@ -181,8 +187,15 @@ class Product(models.Model):
 
     sales_panels = [
         PageChooserOrCreatePanel('product_page'),
-        FieldPanel('categories'),
+        #FieldPanel('categories'),
         # categories
+        # alternative products
+        # accessoires/options
+        # invoice confirm email (PageChooser)
+    ]
+
+    configurator_panels = [
+        # FieldPanel('categories'),
         # alternative products
         # accessoires/options
         # invoice confirm email (PageChooser)
@@ -191,6 +204,7 @@ class Product(models.Model):
     edit_handler = TabbedInterface([
         ObjectList(general_panels, heading='General'),
         ObjectList(sales_panels, heading='Sales'),
+        ObjectList(configurator_panels, heading='configurator'),
         # ObjectList([], heading='Inventory'),
         # ObjectList([], heading='Shipping'),
         # ObjectList([], heading='Attributes'),
@@ -235,8 +249,7 @@ class CategoryPage(Page):
     def __str__(self):
         return "%s" % (self.title)
 
-#from treebeard.mp_tree import MP_Node
-class Category(models.Model):
+class Category(MP_Node):
     title = models.CharField(
         unique=True,
         max_length=255,
@@ -264,6 +277,11 @@ class Category(models.Model):
         on_delete=models.SET_NULL,
     )
 
+    node_order_by = ['title']
+
+    """
+    Panels
+    """
     general_panels = [
         FieldPanel('title'),
         ImageChooserPanel('image'),
@@ -283,5 +301,10 @@ class Category(models.Model):
     class Meta:
         verbose_name_plural = _('categories')
 
-    def __str__(self):
-        return "%s" % (self.title)
+    def __unicode__(self):
+        return "Category: %s" % self.title
+
+    # TODO: set depth here? or in form?
+    def save(self, commit=True):
+        #self.depth =
+        super(Category, self).save(commit)

@@ -2,12 +2,15 @@ from django.shortcuts import redirect
 from django.templatetags.static import static
 from django.utils.translation import ugettext_lazy as _
 
-from wagtail.wagtailadmin import messages
+from treebeard.admin import TreeAdmin
 
 from wagtail.contrib.modeladmin.options import ModelAdmin, ModelAdminGroup
-from wagtail.contrib.modeladmin.views import CreateView, EditView
+from wagtail.contrib.modeladmin.views import CreateView, EditView, IndexView
+from wagtail.wagtailadmin import messages
 from wagtail.wagtailcore.models import Page
+
 from .models import Product, ProductIndexPage, ProductPage, Category, CategoryIndexPage, CategoryPage
+from .views import IndexTree
 
 """
 Product
@@ -77,8 +80,15 @@ class ProductModelAdmin(ModelAdmin):
 """
 Category
 """
-class CategoryCreateView(CreateView):
+class CategoryIndexView(IndexView):
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(CategoryIndexView, self).get_context_data(*args, **kwargs)
+        context.update({'cl': IndexTree(self.request, self.model, self.model_admin)})
+        
+        return context
     
+class CategoryCreateView(CreateView):
     def form_valid(self, form):
         instance = form.save()
 
@@ -128,8 +138,20 @@ class CategoryEditView(EditView):
         )
         return redirect(self.get_success_url())
 
-class CategoryModelAdmin(ModelAdmin):
+# TODO PR to wagtail(contrib.modeladmin)?
+class TreeModelAdmin(ModelAdmin, TreeAdmin):
+    """Wagtail Admin class for treebeard."""
+
+    def get_queryset(self, request):
+        return self.model.get_tree()
+    
+    def get_node(self, node_id):
+        return self.model.objects.get(pk=node_id)
+    
+class CategoryModelAdmin(TreeModelAdmin):
     model = Category
+    index_view_class = CategoryIndexView
+    index_template_name = 'treebeard/admin/tree_change_list.html'
     create_view_class = CategoryCreateView
     edit_view_class = CategoryEditView
     menu_icon = 'fa-tag'
