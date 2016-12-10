@@ -4,6 +4,7 @@ from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 
+from treebeard.forms import MoveNodeForm
 from treebeard.mp_tree import MP_Node
 
 from wagtail.wagtailadmin.edit_handlers import TabbedInterface, ObjectList, PageChooserPanel
@@ -298,13 +299,13 @@ class Category(MP_Node):
         # products
     ])
 
+    base_form_class = MoveNodeForm
+
     class Meta:
         verbose_name_plural = _('categories')
 
-    def __unicode__(self):
-        return "Category: %s" % self.title
+    def __str__(self):
+        return self.title
 
-    # TODO: set depth here? or in form?
-    def save(self, commit=True):
-        #self.depth =
-        super(Category, self).save(commit)
+    def __unicode__(self):
+        return self.title

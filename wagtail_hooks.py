@@ -47,4 +47,13 @@ def editor_js():
 
 @hooks.register('insert_global_admin_css')
 def global_admin_css():
-    return format_html('<link rel="stylesheet" href="{}">', static('wagtailcommerce/css/wagtailadmin/core.css'))
+    css_files = [
+         static('wagtailcommerce/css/wagtailadmin/core.css')
+    ]    
+    css_includes = format_html_join(
+        '\n',
+        '<link rel="stylesheet" href="{}">',
+        ((filename, ) for filename in css_files)
+    )
+
+    return css_includes

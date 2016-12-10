@@ -87,13 +87,13 @@ class CategoryIndexView(IndexView):
         context.update({'cl': IndexTree(self.request, self.model, self.model_admin)})
         
         return context
-    
+
 class CategoryCreateView(CreateView):
     def form_valid(self, form):
         instance = form.save()
 
         if form.data.get('create_page', False) == 'on':
-            parent_page = Page.objects.type(CategoryIndexPage).first()
+            parent_page = instance.get_parent().category_page
             category_page = CategoryPage(
                 title = instance.title,
                 image = instance.image,
@@ -118,7 +118,7 @@ class CategoryEditView(EditView):
         instance = form.save()
 
         if form.data.get('create_page', False) == 'on':
-            parent_page = Page.objects.type(CategoryIndexPage).first()
+            parent_page = instance.get_parent().category_page
             category_page = CategoryPage(
                 title = instance.title,
                 image = instance.image,
@@ -152,12 +152,23 @@ class CategoryModelAdmin(TreeModelAdmin):
     model = Category
     index_view_class = CategoryIndexView
     index_template_name = 'treebeard/admin/tree_change_list.html'
+    
+    index_view_extra_css = (
+        'admin/css/base.css',
+        'admin/css/changelists.css',
+        'treebeard/treebeard-admin.css',
+    )
+
+    index_view_extra_js = (
+        'treebeard/treebeard-admin.js'
+    )
+    
     create_view_class = CategoryCreateView
     edit_view_class = CategoryEditView
     menu_icon = 'fa-tag'
 
     # TODO: add date_published (from ProductPage)
-    list_display = ['title', 'image']
+    list_display = ['title', 'image', 'category_page']
     search_fields = ('title', 'category_page')
     form_view_extra_css = [static('wagtailcommerce/css/core.css')]
 
