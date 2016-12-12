@@ -27,6 +27,7 @@ from .edit_handlers import (
     ProductPageImagesPanel, ProductPageCommercePanel, PageChooserOrCreatePanel
 )
 from .fields import CharNullableField
+from .forms import ProductAdminModelForm
 
 class CommercePage(Page):
     subpage_types = ['ProductIndexPage', 'CategoryIndexPage']
@@ -209,7 +210,7 @@ class Product(models.Model):
         # ObjectList([], heading='Inventory'),
         # ObjectList([], heading='Shipping'),
         # ObjectList([], heading='Attributes'),
-    ])
+    ],base_form_class=ProductAdminModelForm)
 
     def __str__(self):
         return "%s" % (self.title)

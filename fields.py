@@ -9,4 +9,4 @@ class CharNullableField(models.CharField):
         return value or ''
     
     def get_prep_value(self, value):
-        return value or '-'
+        return value
