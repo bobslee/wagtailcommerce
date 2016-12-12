@@ -6,12 +6,14 @@ from django.utils.translation import ugettext_lazy as _
 
 from treebeard.admin import TreeAdmin
 
+from wagtail.contrib.modeladmin.menus import SubMenu
 from wagtail.contrib.modeladmin.options import ModelAdmin, ModelAdminGroup, ThumbnailMixin
 from wagtail.contrib.modeladmin.views import CreateView, EditView, IndexView
 from wagtail.wagtailadmin import messages
 from wagtail.wagtailcore.models import Page
 
 from .models import Product, ProductIndexPage, ProductPage, Category, CategoryIndexPage, CategoryPage
+from .menus import CommerceGroupMenuItem
 from .views import IndexTree
 
 """
@@ -228,3 +230,13 @@ class CommerceModelAdminGroup(ModelAdminGroup):
     menu_icon = 'fa-cube'
     menu_order = 200  # will put in 3rd place (000 being 1st, 100 2nd)
     items = (CategoryModelAdmin, ProductModelAdmin)
+
+    def get_menu_item(self):
+        """
+        Utilised by Wagtail's 'register_menu_item' hook to create a menu
+        for this group with a SubMenu linking to listing pages for any
+        associated ModelAdmin instances
+        """
+        if self.modeladmin_instances:
+            submenu = SubMenu(self.get_submenu_items())
+            return CommerceGroupMenuItem(self, self.get_menu_order(), submenu)
