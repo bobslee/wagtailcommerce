@@ -26,7 +26,7 @@ from .edit_handlers import (
     add_panel_to_edit_handler,
     ProductPageImagesPanel, ProductPageCommercePanel, PageChooserOrCreatePanel
 )
-from .fields import CharNullableField
+from .fields import CharNullableField, TreeManyToManyField
 from .forms import ProductAdminModelForm
 
 class CommercePage(Page):
@@ -123,13 +123,13 @@ class Product(models.Model):
     )
 
     # # TODO or Parental
-    # categories = models.ManyToManyField(
-    #     'wagtailcommerce.category',
-    #     null=True,
-    #     blank=True,
-    #     #on_delete=models.SET_NULL,
-    #     #related_name='categories'
-    # )
+    categories = TreeManyToManyField(
+        'wagtailcommerce.category',
+        null=True,
+        blank=True,
+        #on_delete=models.SET_NULL,
+        #related_name='categories'
+    )
 
     sale_price = MoneyField(
         blank=True,
@@ -197,7 +197,7 @@ class Product(models.Model):
     ]
 
     configurator_panels = [
-        # FieldPanel('categories'),
+        FieldPanel('categories')
         # alternative products
         # accessoires/options
         # invoice confirm email (PageChooser)
