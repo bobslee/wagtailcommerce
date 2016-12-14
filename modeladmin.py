@@ -78,7 +78,7 @@ class ProductModelAdmin(ThumbnailMixin, ModelAdmin):
     edit_view_class = ProductEditView
 
     # TODO: add date_published (from ProductPage)
-    list_display = ['admin_thumb', 'title', 'sale_price', 'product_page_link', 'sku', 'ean']
+    list_display = ['title', 'admin_thumb', 'sale_price', 'product_page_link', 'sku', 'ean']
     list_display_add_buttons = 'title'
     
     search_fields = ('title', 'product_page', 'sku', 'ean',)
@@ -200,7 +200,7 @@ class CategoryModelAdmin(ThumbnailMixin, TreeModelAdmin):
     index_template_name = 'treebeard/admin/tree_change_list.html'
 
     # TODO: add date_published (from ProductPage)
-    list_display = ['title', 'category_page_link', 'admin_thumb']
+    list_display = ['title', 'admin_thumb', 'category_page_link']
     search_fields = ('title', 'category_page')
 
     form_view_extra_css = [static('wagtailcommerce/css/core.css')]
