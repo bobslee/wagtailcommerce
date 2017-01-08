@@ -264,6 +264,11 @@ class Category(MP_Node):
         help_text=_('For admin/backoffice purposes only.')
     )
 
+    active = models.BooleanField(
+        verbose_name=_('active'),
+        default=False
+    )
+
     image = models.ForeignKey(
         'wagtailimages.Image',
         null=True,
@@ -286,6 +291,7 @@ class Category(MP_Node):
     """
     general_panels = [
         FieldPanel('title'),
+        FieldPanel('active'),
         ImageChooserPanel('image'),
         FieldPanel('description'),
     ]

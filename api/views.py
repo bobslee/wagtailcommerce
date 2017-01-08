@@ -7,9 +7,9 @@ from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..models import CommercePage, CategoryIndexPage, CategoryPage, ProductIndexPage
+from ..models import CommercePage, CategoryIndexPage, CategoryPage, ProductIndexPage, Category
 
-#from .serializers import CommerceFilterSerializer
+from .serializers import CategorySerializer
 
 class CommerceSearchFiltersView(APIView):
     renderer_classes = [JSONRenderer]
@@ -24,7 +24,8 @@ class CommerceSearchFiltersView(APIView):
     # RemovedInWagtail14Warning
     if apps.is_installed('rest_framework'):
         renderer_classes.append(BrowsableAPIRenderer)
-    
+
+    # TODO change to post and add (unit)test!!
     def get(self, request, format=None):
         """
         POST data is available in request.data
@@ -50,7 +51,6 @@ class CommerceSearchFiltersView(APIView):
         """
 
         # TODO exclude/filter-out catgeories by request.data (see comment above)
-        category_index_page = CategoryIndexPage.objects.first()
         
         # All items to be included (live) are in include dict.
         # Add items for which the parent.id is in include.
@@ -58,28 +58,15 @@ class CommerceSearchFiltersView(APIView):
         data = OrderedDict()
 
         # tree as a depth first list
-        tree = category_index_page.get_tree(category_index_page)
+        tree = Category.get_tree()
 
-        # TODO by serializer or model?
-        # data[r.pk] = r.to_search_filter_representation()
+        for category in tree:
+            parent = category.get_parent()
+
+            if category.active:
+                if not parent:
+                    data[category.pk] = CategorySerializer(category).data
+                elif parent.pk in data:
+                    data[category.pk] = CategorySerializer(category).data
         
-        for r in tree:
-            if isinstance(r.specific, CategoryPage):
-                parent = r.get_parent().specific
-            
-                if isinstance(parent.specific, CategoryIndexPage) and parent.live and r.live:
-                    data[r.pk] = {
-                        'title': r.title,
-                        'depth': r.depth,
-                        'url': r.url,
-                    }
-            
-                if parent.pk in data and r.live:
-                    data[r.pk] = {
-                        'title': r.title,
-                        'depth': r.depth,
-                        'url': r.url,
-                    }
-
         return list(data.values())
-        

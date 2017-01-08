@@ -200,7 +200,7 @@ class CategoryModelAdmin(ThumbnailMixin, TreeModelAdmin):
     index_template_name = 'treebeard/admin/tree_change_list.html'
 
     # TODO: add date_published (from ProductPage)
-    list_display = ['title', 'admin_thumb', 'category_page_link']
+    list_display = ['title', 'admin_thumb', 'category_page_link', 'active']
     search_fields = ('title', 'category_page')
 
     form_view_extra_css = [static('wagtailcommerce/css/core.css')]
