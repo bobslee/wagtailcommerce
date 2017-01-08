@@ -2,7 +2,7 @@ from __future__ import absolute_import, unicode_literals
 
 from django.conf.urls import include, url
 
-from .views import CommerceSearchFilterView # , CommerceSearchResultsView
+from .views import CommerceSearchFiltersView # , CommerceSearchQueryView
 
 """
 Ensure following is present in your project its urls.py:
@@ -20,6 +20,6 @@ Ensure following is present in your project its urls.py:
 """
 
 urlpatterns = [
-    url(r'^search/filter/', CommerceSearchFilterView.as_view())
-    # url(r'^search/results/', CommerceSearchResultsView.as_view())
+    url(r'^search/filters/', CommerceSearchFiltersView.as_view())
+    # url(r'^search/query/', CommerceSearchQueryView.as_view())
 ]
