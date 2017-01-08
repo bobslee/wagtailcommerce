@@ -29,13 +29,13 @@ class CommerceAPITestCase(APITestCase):
         italian_cooking_books = Category(title="Italian Cooking Books", active=False)
         self.italian_cooking_books = self.cooking_books.add_child(instance=italian_cooking_books)
 
-        italian_cooking_books_pasta = Category(title="Italian Cooking Books Pasta", active=True)
-        self.italian_cooking_books_pasta = self.italian_cooking_books.add_child(
-            instance=italian_cooking_books_pasta)
+        pasta_italian_cooking_books = Category(title="Pasta Italian Cooking Books", active=True)
+        self.pasta_italian_cooking_books = self.italian_cooking_books.add_child(
+            instance=pasta_italian_cooking_books)
 
-        italian_cooking_books_pizza = Category(title="Italian Cooking Books Pizza", active=True)
-        self.italian_cooking_books_pizza = self.italian_cooking_books.add_child(
-            instance=italian_cooking_books_pizza)
+        pizza_italian_cooking_books = Category(title="Pizza Italian Cooking Books", active=True)
+        self.pizza_italian_cooking_books = self.italian_cooking_books.add_child(
+            instance=pizza_italian_cooking_books)
 
         """Cooking Books (NOT active)"""
         inactive_cooking_books = Category(title="Inactive Cooking Books", active=False)
@@ -64,8 +64,8 @@ class CommerceAPITestCase(APITestCase):
         ancient_history_books = Category(title="Ancient History Books", active=True)
         self.ancient_history_books = self.history_books.add_child(instance=ancient_history_books)
 
-        egyptian_ancient_history_books = Category(title="Egyptian Ancient History Books", active=True)
-        self.egyptian_ancient_history_books = self.ancient_history_books.add_child(instance=egyptian_ancient_history_books)
+        egypt_ancient_history_books = Category(title="Egypt Ancient History Books", active=True)
+        self.egypt_ancient_history_books = self.ancient_history_books.add_child(instance=egypt_ancient_history_books)
 
         roman_ancient_history_books = Category(title="Roman Ancient History Books", active=True)
         self.roman_ancient_history_books = self.ancient_history_books.add_child(instance=roman_ancient_history_books)
