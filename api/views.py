@@ -8,7 +8,7 @@ from ..models import CommercePage, CategoryIndexPage, CategoryPage, ProductIndex
 
 #from .serializers import CommerceFilterSerializer
 
-class CommerceFilterView(APIView):
+class CommerceSearchFilterView(APIView):
     renderer_classes = [JSONRenderer]
 
     # The BrowsableAPIRenderer requires rest_framework to be installed
