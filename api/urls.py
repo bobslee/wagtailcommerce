@@ -20,6 +20,6 @@ Ensure following is present in your project its urls.py:
 """
 
 urlpatterns = [
-    url(r'^search/filters/', CommerceSearchFiltersView.as_view())
+    url(r'^search/filters/', CommerceSearchFiltersView.as_view(), name='search-filters')
     # url(r'^search/query/', CommerceSearchQueryView.as_view())
 ]

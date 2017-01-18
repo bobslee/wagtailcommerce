@@ -26,7 +26,7 @@ class CommerceSearchFiltersView(APIView):
         renderer_classes.append(BrowsableAPIRenderer)
 
     # TODO change to post and add (unit)test!!
-    def get(self, request, format=None):
+    def post(self, request, format=None):
         """
         POST data is available in request.data
         """
@@ -37,7 +37,7 @@ class CommerceSearchFiltersView(APIView):
         return Response(data)
 
     def category_filter(self, request):
-        """Get (live) category tree, as depth first list"""
+        """Returns tree as DF (depth first) list"""
 
         """
         TODO
@@ -55,18 +55,15 @@ class CommerceSearchFiltersView(APIView):
         # All items to be included (live) are in include dict.
         # Add items for which the parent.id is in include.
         # include (dict) starts with the first one (root)
-        data = OrderedDict()
+        data = []
 
         # tree as a depth first list
-        tree = Category.get_tree()
+        if 'category' in request.data and len(request.data['category']) > 0:
+            tree = Category.get_tree_active(request.data['category'])
+        else:
+            tree = Category.get_tree_active()
 
         for category in tree:
-            parent = category.get_parent()
-
-            if category.active:
-                if not parent:
-                    data[category.pk] = CategorySerializer(category).data
-                elif parent.pk in data:
-                    data[category.pk] = CategorySerializer(category).data
+            data.append(CategorySerializer(category).data)
         
-        return list(data.values())
+        return data
