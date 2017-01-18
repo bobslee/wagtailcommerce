@@ -1,5 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 
+from collections import OrderedDict
+
 from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
@@ -28,6 +30,8 @@ from .edit_handlers import (
 )
 from .fields import CharNullableField, TreeManyToManyField
 from .forms import ProductAdminModelForm
+
+from wagtailcommerce.utils.text import chunk_string_increment
 
 class CommercePage(Page):
     subpage_types = ['ProductIndexPage', 'CategoryIndexPage']
@@ -257,6 +261,11 @@ class Category(MP_Node):
         max_length=255,
         verbose_name=_('title')
     )
+
+    active = models.BooleanField(
+        verbose_name=_('active'),
+        default=False
+    )
     
     description = models.TextField(
         blank=True,
@@ -286,6 +295,7 @@ class Category(MP_Node):
     """
     general_panels = [
         FieldPanel('title'),
+        FieldPanel('active'),
         ImageChooserPanel('image'),
         FieldPanel('description'),
     ]
@@ -310,3 +320,69 @@ class Category(MP_Node):
 
     def __unicode__(self):
         return self.title
+
+    @classmethod
+    def get_tree_active(self, ids=[]):
+        """Get tree as DF (depth first) list"""
+
+        tree = []
+
+        if len(ids) > 0:
+            categories = Category.objects.filter(pk__in=ids, active=True)
+        else:
+            categories = Category.objects.filter(active=True)
+
+        """Ancestors"""
+        """First determine per category if all ancsestors active"""
+        all_ancestor_paths = []
+        # Collect all_ancestor_paths. Merge/combine by category ancestors.
+        for c in categories:
+            paths = chunk_string_increment(c.path, Category.steplen)
+            ancestor_paths = paths[0:-1]
+            # union all: of all_ancestors_paths and ancestor_paths of this category
+            all_ancestor_paths = list(set(all_ancestor_paths) | set(ancestor_paths))
+
+        # Active ancestor_paths, by all active ancestor categories
+        # Redundant in case all active categories where queries upfront anyway; len(ids) == 0
+        active_ancestor_categories = Category.objects.filter(path__in=all_ancestor_paths, active=True)
+        active_ancestor_paths = []
+
+        for c in active_ancestor_categories:
+            active_ancestor_paths.append(c.path)
+
+        # Determine categories where all ancestors are active            
+        for idx, category in enumerate(categories):
+            paths = chunk_string_increment(category.path, Category.steplen)
+            ancestor_paths = paths[0:-1]
+
+            # If any of (Category) ancestor_paths is NOT in active_ancestor_paths (So length is less then)
+            if len(ancestor_paths) < len(list(set(ancestor_paths) & set(active_ancestor_paths))):
+                del categories[idx]
+
+        # From here all categories have all ancestors active.
+        # For categories determine descendants (as DF tree), by active (in) tree-logic
+        """Descendants"""
+        for category in categories:
+            # Potential performace risk of many queries
+            # To reduce to raw SQL to determine the active-descendants-tree.
+            # And then Category.objects.filter(pk__in=active_descendants_pk)
+            
+            # TODO check whether get_tree(category) only returns the sub-tree, under category
+            cat_tree = Category.get_tree(category)
+
+            # The first cat in cat_tree (DF) list, is category (from container loop),
+            # as argument for get_tree(category)
+            for cat in cat_tree:
+
+                if cat.active:
+                    path = chunk_string_increment(cat.path, Category.steplen)
+                    ancestor_paths = path[0:-1]
+
+                    # If active and all ancestor_paths in union/overlap
+                    if len(ancestor_paths) == len(list(set(ancestor_paths) & set(active_ancestor_paths))):
+                        # Append current (active) Category path to active_ancestor_paths, because we traverse
+                        # its children (in next loop) too.
+                        active_ancestor_paths.append(path[-1])
+                        tree.append(cat)
+
+        return tree
