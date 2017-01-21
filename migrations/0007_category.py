@@ -27,6 +27,7 @@ class Migration(migrations.Migration):
                 ('depth', models.PositiveIntegerField()),
                 ('numchild', models.PositiveIntegerField(default=0)),
                 ('title', models.CharField(max_length=255, unique=True, verbose_name='title')),
+                ('active', models.BooleanField(default=False, verbose_name='active')),
                 ('description', models.TextField(blank=True, help_text='For admin/backoffice purposes only.', verbose_name='description')),
             ],
             options={

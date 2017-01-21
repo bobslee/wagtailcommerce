@@ -125,6 +125,10 @@ class CategoryCreateView(CreateView):
     def form_valid(self, form):
         instance = form.save()
 
+        # TODO
+        # Maybe in Service class/function (testable)
+        # - In case a the parent Category has pas, move it under.
+        # - In case Category children have pages. Move children pages under this page.
         if form.data.get('create_page', False) == 'on':
             parent_page = instance.get_parent().category_page
             category_page = CategoryPage(
@@ -150,6 +154,10 @@ class CategoryEditView(EditView):
     def form_valid(self, form):
         instance = form.save()
 
+        # TODO
+        # Maybe in Service class/function (testable)
+        # - In case a the parent Category has pas, move it under.
+        # - In case Category children have pages. Move children pages under this page.
         if form.data.get('create_page', False) == 'on':
             parent_page = instance.get_parent().category_page
             category_page = CategoryPage(

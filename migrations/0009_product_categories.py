@@ -9,7 +9,7 @@ import wagtailcommerce.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('wagtailcommerce', '0007_category'),
+        ('wagtailcommerce', '0008_category_initial_data'),
     ]
 
     operations = [
