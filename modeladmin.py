@@ -125,24 +125,8 @@ class CategoryCreateView(CreateView):
     def form_valid(self, form):
         instance = form.save()
 
-        # TODO
-        # Maybe in Service class/function (testable)
-        # - In case a the parent Category has pas, move it under.
-        # - In case Category children have pages. Move children pages under this page.
         if form.data.get('create_page', False) == 'on':
-            parent = instance.get_first_ancestor_with_category_page()
-            category_page = CategoryPage(
-                title = instance.title,
-                image = instance.image,
-            )
-
-            if parent is not None:
-                parent.category_page.add_child(instance=category_page)
-            else:
-                category_index_page = Page.objects.type(CategoryIndexPage).first()
-                category_index_page.add_child(instance=category_page)
-        
-            instance.category_page = category_page
+            instance.create_page()
             instance.save()
         
         messages.success(
@@ -159,24 +143,8 @@ class CategoryEditView(EditView):
     def form_valid(self, form):
         instance = form.save()
 
-        # TODO
-        # Maybe in Service class/function (testable)
-        # - In case a the parent Category has pas, move it under.
-        # - In case Category children have pages. Move children pages under this page.
         if form.data.get('create_page', False) == 'on':
-            parent = instance.get_first_ancestor_with_category_page()
-            category_page = CategoryPage(
-                title = instance.title,
-                image = instance.image,
-            )
-
-            if parent is not None:
-                parent.category_page.add_child(instance=category_page)
-            else:
-                category_index_page = Page.objects.type(CategoryIndexPage).first()
-                category_index_page.add_child(instance=category_page)
-            
-            instance.category_page = category_page
+            instance.create_page()
             instance.save()
         elif instance.category_page and form.data.get('image'):
                 instance.category_page.image = instance.image

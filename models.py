@@ -321,6 +321,22 @@ class Category(MP_Node):
     def __unicode__(self):
         return self.title
 
+    def create_page(self):
+        parent = self.get_first_ancestor_with_category_page()
+        category_page = CategoryPage(
+            title = self.title,
+            image = self.image,
+        )
+
+        if parent is not None:
+            parent.category_page.add_child(instance=category_page)
+        else:
+            # If no parent in any of ancerstors, then put it under the (root)index.
+            category_index_page = Page.objects.type(CategoryIndexPage).first()
+            category_index_page.add_child(instance=category_page)
+
+        self.category_page = category_page
+
     def get_first_ancestor_with_category_page(self):
         ancestors = self.get_ancestors()
 
