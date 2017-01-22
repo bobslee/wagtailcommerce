@@ -350,12 +350,10 @@ class Category(MP_Node):
     def get_tree_active(self, ids=[]):
         """Get tree as DF (depth first) list"""
 
-        tree = []
-
         if len(ids) > 0:
-            categories = Category.objects.filter(pk__in=ids, active=True)
+            categories = Category.objects.select_related('category_page').filter(pk__in=ids, active=True)
         else:
-            categories = Category.objects.filter(active=True)
+            categories = Category.objects.select_related('category_page').filter(active=True)
 
         """Ancestors"""
         """First determine per category if all ancsestors active"""
@@ -369,7 +367,7 @@ class Category(MP_Node):
 
         # Active ancestor_paths, by all active ancestor categories
         # Redundant in case all active categories where queries upfront anyway; len(ids) == 0
-        active_ancestor_categories = Category.objects.filter(path__in=all_ancestor_paths, active=True)
+        active_ancestor_categories = Category.objects.select_related('category_page').filter(path__in=all_ancestor_paths, active=True)
         active_ancestor_paths = []
 
         for c in active_ancestor_categories:
@@ -386,19 +384,20 @@ class Category(MP_Node):
 
         # From here all categories have all ancestors active.
         # For categories determine descendants (as DF tree), by active (in) tree-logic
-        """Descendants"""
+        """Build tree"""
+        tree = OrderedDict()
+
         for category in categories:
             # Potential performace risk of many queries
             # To reduce to raw SQL to determine the active-descendants-tree.
             # And then Category.objects.filter(pk__in=active_descendants_pk)
             
             # TODO check whether get_tree(category) only returns the sub-tree, under category
-            cat_tree = Category.get_tree(category)
+            cat_tree = Category.get_tree(category).select_related('category_page')
 
             # The first cat in cat_tree (DF) list, is category (from container loop),
             # as argument for get_tree(category)
             for cat in cat_tree:
-
                 if cat.active:
                     path = chunk_string_increment(cat.path, Category.steplen)
                     ancestor_paths = path[0:-1]
@@ -407,7 +406,10 @@ class Category(MP_Node):
                     if len(ancestor_paths) == len(list(set(ancestor_paths) & set(active_ancestor_paths))):
                         # Append current (active) Category path to active_ancestor_paths, because we traverse
                         # its children (in next loop) too.
-                        active_ancestor_paths.append(path[-1])
-                        tree.append(cat)
+                        if path[-1] not in active_ancestor_paths:
+                            active_ancestor_paths.append(path[-1])
 
-        return tree
+                        if cat.path not in tree:
+                            tree[cat.path] = cat
+
+        return list(tree.values())
