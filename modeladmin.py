@@ -130,13 +130,18 @@ class CategoryCreateView(CreateView):
         # - In case a the parent Category has pas, move it under.
         # - In case Category children have pages. Move children pages under this page.
         if form.data.get('create_page', False) == 'on':
-            parent_page = instance.get_parent().category_page
+            parent = instance.get_first_ancestor_with_category_page()
             category_page = CategoryPage(
                 title = instance.title,
                 image = instance.image,
             )
+
+            if parent is not None:
+                parent.category_page.add_child(instance=category_page)
+            else:
+                category_index_page = Page.objects.type(CategoryIndexPage).first()
+                category_index_page.add_child(instance=category_page)
         
-            parent_page.add_child(instance=category_page)
             instance.category_page = category_page
             instance.save()
         
@@ -159,13 +164,18 @@ class CategoryEditView(EditView):
         # - In case a the parent Category has pas, move it under.
         # - In case Category children have pages. Move children pages under this page.
         if form.data.get('create_page', False) == 'on':
-            parent_page = instance.get_parent().category_page
+            parent = instance.get_first_ancestor_with_category_page()
             category_page = CategoryPage(
                 title = instance.title,
                 image = instance.image,
             )
-        
-            parent_page.add_child(instance=category_page)
+
+            if parent is not None:
+                parent.category_page.add_child(instance=category_page)
+            else:
+                category_index_page = Page.objects.type(CategoryIndexPage).first()
+                category_index_page.add_child(instance=category_page)
+            
             instance.category_page = category_page
             instance.save()
         elif instance.category_page and form.data.get('image'):

@@ -321,6 +321,15 @@ class Category(MP_Node):
     def __unicode__(self):
         return self.title
 
+    def get_first_ancestor_with_category_page(self):
+        ancestors = self.get_ancestors()
+
+        for a in reversed(ancestors):
+            if a.category_page is not None:
+                return a
+
+        return None
+
     @classmethod
     def get_tree_active(self, ids=[]):
         """Get tree as DF (depth first) list"""
