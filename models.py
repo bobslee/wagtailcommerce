@@ -337,6 +337,11 @@ class Category(MP_Node):
 
         self.category_page = category_page
 
+    # TODO Implement
+    # Get products total/count in all active children and self
+    def get_product_count(self):
+        return 25
+
     def get_first_ancestor_with_category_page(self):
         ancestors = self.get_ancestors()
 

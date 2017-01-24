@@ -2,16 +2,30 @@ from collections import OrderedDict
 
 from django.apps import apps
 
+from django_filters.rest_framework import DjangoFilterBackend
+
+from rest_framework import generics
 from rest_framework.parsers import JSONParser
 from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..models import CommercePage, CategoryIndexPage, CategoryPage, ProductIndexPage, Category
+from ..models import CommercePage, Category, CategoryIndexPage, CategoryPage, Product, ProductIndexPage
 
-from .serializers import CategorySerializer
+from .filters import ProductFilter
+from .serializers import CategorySerializer, ProductSerializer
 
-class CommerceSearchFiltersView(APIView):
+class ProductSearchQueryView(generics.ListAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filter_class = ProductFilter
+
+    # def get(self, request, format=None):
+    #     # Or a post?
+    #     pass
+
+class ProductSearchFiltersView(APIView):
     renderer_classes = [JSONRenderer]
 
     """
@@ -25,9 +39,9 @@ class CommerceSearchFiltersView(APIView):
     if apps.is_installed('rest_framework'):
         renderer_classes.append(BrowsableAPIRenderer)
 
-    def post(self, request, format=None):
+    def get(self, request, format=None):
         """
-        POST data is available in request.data
+        Get data is available in request.data
         """
         
         data = {}
