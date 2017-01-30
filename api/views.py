@@ -43,13 +43,16 @@ class ProductSearchFiltersView(APIView):
         """
         Get data is available in request.data
         """
-        
+
+        self.product_filter = ProductFilter.get_filters()
+
         data = {}
-        data['category'] = self.category_filter(request)
+        data['categories'] = self.categories_filter(request)
+        data['sale_price'] = self.sale_price_filter(request)
 
         return Response(data)
 
-    def category_filter(self, request):
+    def categories_filter(self, request):
         """Returns tree as DF (depth first) list"""
 
         """
@@ -68,7 +71,11 @@ class ProductSearchFiltersView(APIView):
         # All items to be included (live) are in include dict.
         # Add items for which the parent.id is in include.
         # include (dict) starts with the first one (root)
-        data = []
+        categories_filter = self.product_filter.get('categories')
+        data = {
+            'filter': {'lookup_expr': categories_filter.lookup_expr},
+            'objects': []
+        }
 
         # tree as a depth first list
         if 'category' in request.data and len(request.data['category']) > 0:
@@ -77,6 +84,18 @@ class ProductSearchFiltersView(APIView):
             tree = Category.get_tree_active()
 
         for category in tree:
-            data.append(CategorySerializer(category).data)
+            data['objects'].append(CategorySerializer(category).data)
+        
+        return data
+
+    def sale_price_filter(self, request):
+        min_sale_price_filter = self.product_filter.get('min_sale_price')
+
+        data = {
+            'filter': {'lookup_expr': min_sale_price_filter.lookup_expr},
+        }
+
+        # TODO: group filter or make kinda rangefilter?
+        #max_sale_price_filter = self.product_filter.get('min_sale_price')
         
         return data
