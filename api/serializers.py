@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from djmoney.contrib.django_rest_framework.fields import MoneyField
 
 from ..models import Category, CategoryPage, Product, ProductPage
 
@@ -80,8 +81,10 @@ class ProductPageSerializer(serializers.ModelSerializer):
         
 class ProductSerializer(serializers.ModelSerializer):
     product_page = ProductPageSerializer()
+    sale_price = MoneyField(max_digits=10, decimal_places=2)
+    categories = CategorySerializer(many=True)
 
     class Meta:
         model = Product
-        fields = ('id', 'title', 'product_page')
-        read_only_fields = ('id', 'title', 'product_page')
+        fields = ('id', 'title', 'product_page', 'categories', 'sale_price', 'sku', 'ean')
+        read_only_fields = ('id', 'title', 'product_page', 'categories', 'sale_price', 'sku', 'ean')
