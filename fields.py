@@ -5,6 +5,20 @@ from django.forms.models import ModelMultipleChoiceField
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
 
+from djmoney.models.fields import MoneyField as DjMoneyField
+
+"""
+Because djmoney doesn't support (by validation) a 'range' (i.e. a SQL 
+BETWEEN) lookup.
+Seems this currently works just fine.
+"""
+class MoneyField(DjMoneyField):
+    def validate_lookup(self, lookup):
+        if lookup == 'range':
+            return
+        else:
+            super(MoneyField, self).validate_lookup(lookup)
+
 class CharNullableField(models.CharField):
     description = "CharField that stores NULL but returns ''"
 

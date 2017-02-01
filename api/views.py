@@ -53,10 +53,11 @@ class ProductSearchFiltersView(APIView):
         return Response(data)
 
     def categories_filter(self, request):
-        """Returns tree as DF (depth first) list"""
+        """Categories filter
+        
+        Returns tree as DF (depth first) list
 
-        """
-        TODO
+        TODO:
         - Exclude categories by set request.data['filters']['category'] in POST.
         - Rewrite to return dict as (real) tree? To ease client/JS.
         - Build 'data' to some datastructure with operators (on root or per item)
@@ -67,13 +68,16 @@ class ProductSearchFiltersView(APIView):
         """
 
         # TODO exclude/filter-out catgeories by request.data (see comment above)
-        
         # All items to be included (live) are in include dict.
         # Add items for which the parent.id is in include.
         # include (dict) starts with the first one (root)
         categories_filter = self.product_filter.get('categories')
         data = {
-            'filter': {'lookup_expr': categories_filter.lookup_expr},
+            'filter': {
+                'type': categories_filter.__class__.__name__,
+                'lookup_expr': categories_filter.lookup_expr,
+                'field': 'id'
+            },
             'objects': []
         }
 
@@ -89,13 +93,29 @@ class ProductSearchFiltersView(APIView):
         return data
 
     def sale_price_filter(self, request):
-        min_sale_price_filter = self.product_filter.get('min_sale_price')
+        """
+        Sale price filter
+
+        This handles a filter by an URL its query parameters.
+        In following examples the query parameters result in a SQL WHERE-clause.
+        
+        1. sale_price_0=5
+        SQL: WHERE sale_price >= 5
+
+        2. sale_price_1=5
+        SQL: WHERE sale_price <= 5
+
+        3. sale_price_0=5&sale_price_1=20
+        SQL: WHERE sale_price BETWEEN 5 AND 20
+        """
+        sale_price_filter = self.product_filter.get('sale_price')
 
         data = {
-            'filter': {'lookup_expr': min_sale_price_filter.lookup_expr},
+            'filter': {
+                'type': sale_price_filter.__class__.__name__,
+                'lookup_expr': sale_price_filter.lookup_expr,
+                'field': 'sale_price'
+            }
         }
 
-        # TODO: group filter or make kinda rangefilter?
-        #max_sale_price_filter = self.product_filter.get('min_sale_price')
-        
         return data

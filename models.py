@@ -21,14 +21,13 @@ from wagtail.wagtailadmin.edit_handlers import (
 )
 
 import moneyed
-from djmoney.models.fields import MoneyField
 
 from .blocks import ProductStreamBlock
 from .edit_handlers import (
     add_panel_to_edit_handler,
     ProductPageImagesPanel, ProductPageCommercePanel, PageChooserOrCreatePanel
 )
-from .fields import CharNullableField, TreeManyToManyField
+from .fields import CharNullableField, TreeManyToManyField, MoneyField
 from .forms import ProductAdminModelForm
 
 from wagtailcommerce.utils.text import chunk_string_increment
