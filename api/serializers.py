@@ -45,8 +45,10 @@ class CategorySerializer(DynamicFieldsModelSerializer):
 
     class Meta:
         model = Category
-        fields = ('id', 'path', 'ancestor_paths', 'title', 'depth', 'category_page', 'product_count')
-        read_only_fields = ('id', 'path', 'ancestor_paths', 'title', 'depth', 'category_page', 'product_count')
+        fields = ('id', 'path', 'ancestor_paths', 'title', 'depth',
+                  'category_page', 'search_filter_menu', 'product_count')
+        read_only_fields = ('id', 'path', 'ancestor_paths', 'title', 'depth',
+                            'category_page', 'search_filter_menu', 'product_count')
 
     def get_ancestor_paths(self, obj):
         paths = chunk_string_increment(obj.path, Category.steplen)

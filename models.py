@@ -192,7 +192,7 @@ class Product(models.Model):
 
     sales_panels = [
         PageChooserOrCreatePanel('product_page'),
-        #FieldPanel('categories'),
+        FieldPanel('categories'),
         # categories
         # alternative products
         # accessoires/options
@@ -200,7 +200,7 @@ class Product(models.Model):
     ]
 
     configurator_panels = [
-        FieldPanel('categories')
+        #FieldPanel('categories')
         # alternative products
         # accessoires/options
         # invoice confirm email (PageChooser)
@@ -209,7 +209,7 @@ class Product(models.Model):
     edit_handler = TabbedInterface([
         ObjectList(general_panels, heading='General'),
         ObjectList(sales_panels, heading='Sales'),
-        ObjectList(configurator_panels, heading='configurator'),
+        # ObjectList(configurator_panels, heading='configurator'),
         # ObjectList([], heading='Inventory'),
         # ObjectList([], heading='Shipping'),
         # ObjectList([], heading='Attributes'),
@@ -265,6 +265,12 @@ class Category(MP_Node):
         verbose_name=_('active'),
         default=False
     )
+
+    search_filter_menu = models.BooleanField(
+        verbose_name=_('search filter menu'),
+        default=False,
+        help_text=_('Add Category to search-filters. Direct sub-categories appear as filter options')
+    )
     
     description = models.TextField(
         blank=True,
@@ -300,6 +306,7 @@ class Category(MP_Node):
     ]
 
     sales_panels = [
+        FieldPanel('search_filter_menu'),
         PageChooserOrCreatePanel('category_page'),
     ]
 
