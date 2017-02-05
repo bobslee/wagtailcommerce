@@ -190,7 +190,7 @@ class Product(models.Model):
         FieldPanel('description'),
     ]
 
-    sales_panels = [
+    catalog_panels = [
         PageChooserOrCreatePanel('product_page'),
         FieldPanel('categories'),
         # categories
@@ -208,7 +208,7 @@ class Product(models.Model):
 
     edit_handler = TabbedInterface([
         ObjectList(general_panels, heading='General'),
-        ObjectList(sales_panels, heading='Sales'),
+        ObjectList(catalog_panels, heading='Catalog'),
         # ObjectList(configurator_panels, heading='configurator'),
         # ObjectList([], heading='Inventory'),
         # ObjectList([], heading='Shipping'),
@@ -305,14 +305,14 @@ class Category(MP_Node):
         FieldPanel('description'),
     ]
 
-    sales_panels = [
+    catalog_panels = [
         FieldPanel('search_filter_menu'),
         PageChooserOrCreatePanel('category_page'),
     ]
 
     edit_handler = TabbedInterface([
         ObjectList(general_panels, heading='General'),
-        ObjectList(sales_panels, heading='Sales'),
+        ObjectList(catalog_panels, heading='Catalog'),
         # products
     ])
 
