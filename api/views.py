@@ -83,12 +83,19 @@ class ProductSearchFiltersView(APIView):
 
         # tree as a depth first list
         if 'category' in request.data and len(request.data['category']) > 0:
-            tree = Category.get_tree_active(request.data['category'])
+            menu = Category.get_tree_search_filter_menu(request.data['category'])
         else:
-            tree = Category.get_tree_active()
+            menu = Category.get_tree_search_filter_menu()
 
-        for category in tree:
-            data['objects'].append(CategorySerializer(category).data)
+        for node in menu:
+            category_filter_menu = OrderedDict()
+            category_filter_menu['menu_object'] = CategorySerializer(node['menu_object']).data
+            category_filter_menu['objects'] = []
+
+            for filter_obj in node['objects']:
+                category_filter_menu['objects'].append(CategorySerializer(filter_obj).data)
+
+            data['objects'].append(category_filter_menu)
         
         return data
 

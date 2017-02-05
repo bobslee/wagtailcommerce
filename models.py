@@ -358,6 +358,28 @@ class Category(MP_Node):
         return None
 
     @classmethod
+    def get_tree_search_filter_menu(self, ids=[]):
+        tree = Category.get_tree_active(ids)
+        menu = OrderedDict()
+
+        for category in tree:
+            paths = chunk_string_increment(category.path, Category.steplen)
+
+            if category.search_filter_menu:
+                menu[category.path] = OrderedDict()
+                menu[category.path]['menu_object'] = category
+                menu[category.path]['objects'] = []
+            
+            if len(paths) > 1:
+                ancestor_path = ''.join(paths[-2])
+
+                # Move up, to 'parent' if. And comment about the ancestor path, which is index [-2]
+                if ancestor_path in menu:
+                    menu[ancestor_path]['objects'].append(category)
+
+        return list(menu.values())
+
+    @classmethod
     def get_tree_active(self, ids=[]):
         """Get tree as DF (depth first) list"""
 

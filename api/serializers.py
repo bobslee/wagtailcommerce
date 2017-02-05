@@ -57,23 +57,6 @@ class CategorySerializer(DynamicFieldsModelSerializer):
     def get_product_count(self, obj):
         return obj.get_product_count()
 
-    # TODO: search_operators on the Model ?!!!
-    # Check Wagtail(admin) API or Djanog howto
-    # Write a service class ProductSearchQuery or @classmethod in Product model,
-    # which builds a product-search query (object)  products, by adding filters
-    # (argument or via methed add_filter())
-    def get_operators(self, obj):
-        """Get operators"""
-
-        """Operators instruct the search-filter client/ui how to render
-        For example:
-        - select1: renders to single-choice i.e. radio input
-        - select: renders to multiple-choice i.e. checkbox inputs
-        - range: renders to a min/max input (range slider)
-        - date: renders to date from/until inputs.
-        """
-        pass
-
 """Product"""
 class ProductPageSerializer(serializers.ModelSerializer):
     class Meta:
