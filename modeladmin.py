@@ -12,6 +12,7 @@ from wagtail.contrib.modeladmin.views import CreateView, EditView, IndexView
 from wagtail.wagtailadmin import messages
 from wagtail.wagtailcore.models import Page
 
+from .filters import ForeignKeyIsNullFieldListFilter
 from .models import Product, ProductIndexPage, ProductPage, Category, CategoryIndexPage, CategoryPage
 from .menus import CommerceGroupMenuItem
 from .views import IndexTree
@@ -80,6 +81,7 @@ class ProductModelAdmin(ThumbnailMixin, ModelAdmin):
     # TODO: add date_published (from ProductPage)
     list_display = ['title', 'admin_thumb', 'sale_price', 'product_page_link', 'sku', 'ean']
     list_display_add_buttons = 'title'
+    list_filter = [('image', ForeignKeyIsNullFieldListFilter), ('product_page', ForeignKeyIsNullFieldListFilter)]
     
     search_fields = ('title', 'product_page', 'sku', 'ean',)
     form_view_extra_css = [static('wagtailcommerce/css/core.css')]
@@ -102,13 +104,6 @@ class ProductModelAdmin(ThumbnailMixin, ModelAdmin):
             return obj.product_page
     product_page_link.short_description = _('product page')
     
-    # def image_display(self, obj):
-    #     if obj.image:
-    #         rendition = get_rendition_or_not_found(obj.image, 'fill-50x50')
-    #         return rendition.img_tag()
-    #     else:
-    #         return obj.image
-    # image_display.short_description = _('image')
 
 """
 Category
@@ -187,6 +182,8 @@ class CategoryModelAdmin(ThumbnailMixin, TreeModelAdmin):
 
     # TODO: add date_published (from ProductPage)
     list_display = ['title', 'admin_thumb', 'category_page_link', 'search_filter_menu', 'active']
+    # TODO
+    #list_filter = [('image', ForeignKeyIsNullFieldListFilter), ('category_page', ForeignKeyIsNullFieldListFilter)]
     search_fields = ('title', 'category_page')
 
     form_view_extra_css = [static('wagtailcommerce/css/core.css')]
