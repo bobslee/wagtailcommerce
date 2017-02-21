@@ -16,6 +16,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='category',
             name='search_filter_menu',
-            field=models.BooleanField(default=False, verbose_name='search filter menu'),
+            field=models.BooleanField(default=False, help_text='Add Category to search-filters. Direct sub-categories appear as filter options', verbose_name='search filter menu'),
         )
     ]
