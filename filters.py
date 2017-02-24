@@ -2,7 +2,7 @@ from django.contrib.admin.filters import SimpleListFilter, FieldListFilter
 from django.utils.translation import ugettext_lazy as _
 
 class ForeignKeyIsNullFieldListFilter(FieldListFilter):
-    template = 'wagtailcommerce/boolean_filter.html'
+    template = 'wagtailcommerce/foreign_key_isnull_filter.html'
 
     def __init__(self, field, request, params, model, model_admin, field_path):
         self.lookup_kwarg = "%s__isnull" % field_path
