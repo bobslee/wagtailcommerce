@@ -13,9 +13,12 @@ from wagtail.wagtailadmin import messages
 from wagtail.wagtailcore.models import Page
 
 from .filters import ForeignKeyIsNullFieldListFilter
-from .models import Product, ProductIndexPage, ProductPage, Category, CategoryIndexPage, CategoryPage
+from .models import ProductIndexPage, ProductPage, Category, CategoryIndexPage, CategoryPage
 from .menus import CommerceGroupMenuItem
 from .views import IndexTree
+
+from wagtailcommerce import get_product_model
+Product = get_product_model()
 
 """
 Product

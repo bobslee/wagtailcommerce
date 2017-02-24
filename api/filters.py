@@ -1,6 +1,9 @@
 import django_filters
 
-from ..models import Category, Product
+from ..models import Category
+
+from wagtailcommerce import get_product_model
+Product = get_product_model()
 
 class ProductFilter(django_filters.rest_framework.FilterSet):
     sale_price = django_filters.RangeFilter(name="sale_price")

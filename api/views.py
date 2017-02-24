@@ -10,7 +10,10 @@ from rest_framework.renderers import BrowsableAPIRenderer, JSONRenderer
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..models import CommercePage, Category, CategoryIndexPage, CategoryPage, Product, ProductIndexPage
+from ..models import CommercePage, Category, CategoryIndexPage, CategoryPage, ProductIndexPage
+
+from wagtailcommerce import get_product_model
+Product = get_product_model()
 
 from .filters import ProductFilter
 from .serializers import CategorySerializer, ProductSerializer

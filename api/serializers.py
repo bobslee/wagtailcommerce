@@ -1,9 +1,12 @@
 from rest_framework import serializers
 from djmoney.contrib.django_rest_framework.fields import MoneyField
 
-from ..models import Category, CategoryPage, Product, ProductPage
+from ..models import Category, CategoryPage, ProductPage
 
 from wagtailcommerce.utils.text import chunk_string_increment
+
+from wagtailcommerce import get_product_model
+Product = get_product_model()
 
 """
 https://github.com/Hipo/drf-extra-fields

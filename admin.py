@@ -5,8 +5,11 @@ from django.core.urlresolvers import reverse
 from django.forms.widgets import HiddenInput, Textarea
 from django.db.models import Q
 
-from .models import Product, ProductPage
+from .models import ProductPage
 from .services import ProductService
+
+from wagtailcommerce import get_product_model
+Product = get_product_model()
 
 class ProductAdminForm(forms.ModelForm):
    add_product_page = forms.BooleanField(

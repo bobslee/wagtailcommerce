@@ -1,6 +1,9 @@
 from django.test import TestCase
 
-from ..models import Category, CategoryIndexPage, CategoryPage, Product
+from ..models import Category, CategoryIndexPage, CategoryPage
+
+from wagtailcommerce import get_product_model
+Product = get_product_model()
 
 class CommerceTestCase(TestCase):
     def setUp(self):

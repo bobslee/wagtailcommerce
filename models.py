@@ -97,7 +97,7 @@ class ProductPage(Page):
 add_panel_to_edit_handler(ProductPage, ProductPageCommercePanel, _('Commerce'), classname="commerce")
 add_panel_to_edit_handler(ProductPage, ProductPageImagesPanel, _('Images'), classname="image", index=3)
 
-class Product(models.Model):
+class AbstractProduct(models.Model):
     title = models.CharField(
         unique=True,
         max_length=255,
@@ -123,6 +123,7 @@ class Product(models.Model):
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
+        related_name="%(app_label)s_products"
     )
 
     # # TODO or Parental
@@ -131,7 +132,7 @@ class Product(models.Model):
         null=True,
         blank=True,
         #on_delete=models.SET_NULL,
-        #related_name='categories'
+        related_name="%(app_label)s_products"
     )
 
     sale_price = MoneyField(
@@ -217,6 +218,19 @@ class Product(models.Model):
 
     def __str__(self):
         return "%s" % (self.title)
+
+    class Meta:
+        abstract = True
+        app_label = 'wagtailcommerce'
+        verbose_name = _('Product')
+        verbose_name_plural = _('Products')
+
+class Product(AbstractProduct):
+    class Meta(AbstractProduct.Meta):
+        swappable = 'COMMERCE_PRODUCT_MODEL'
+        app_label = 'wagtailcommerce'
+        verbose_name = _('Product')
+        verbose_name_plural = _('Products')
 
 """
 Category
@@ -319,6 +333,8 @@ class Category(MP_Node):
     base_form_class = MoveNodeForm
 
     class Meta:
+        app_label = 'wagtailcommerce'
+        verbose_name = _('category')
         verbose_name_plural = _('categories')
 
     def __str__(self):
